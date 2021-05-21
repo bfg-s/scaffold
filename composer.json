@@ -1,0 +1,51 @@
+{
+    "name": "bfg/scaffold",
+    "description": "Scaffolding for recursively creating migration models and relationships between them",
+    "keywords": [
+        "laravel"
+    ],
+    "homepage": "https://github.com/bfg/scaffold",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "bfg",
+            "email": "bfg.script@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "illuminate/contracts": "^8.0",
+        "bfg/entity": "^1.1.0"
+    },
+    "require-dev": {
+
+    },
+    "autoload": {
+        "psr-4": {
+            "Bfg\\Scaffold\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+
+        }
+    },
+    "scripts": {
+
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bfg\\Scaffold\\ServiceProvider"
+            ],
+            "aliases": {
+                "Scaffold": "Bfg\\Scaffold\\Facade"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
