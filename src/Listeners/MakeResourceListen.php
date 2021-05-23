@@ -2,7 +2,10 @@
 
 namespace Bfg\Scaffold\Listeners;
 
+use Bfg\Entity\Core\Entities\DocumentorEntity;
 use Bfg\Scaffold\LevyModel\LevyModel;
+use Bfg\Scaffold\LevyModel\LevyResourceModel;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * Class MakeResourceListen
@@ -18,6 +21,39 @@ class MakeResourceListen extends ListenerControl
      */
     public function handle(LevyModel $model)
     {
-        
+        $files = [];
+
+        foreach ($model->resources as $resource) {
+
+            $files[] = $this->makeFile($resource);
+        }
+
+        $this->storage()->many_store($files);
+    }
+
+    /**
+     * @param  LevyResourceModel  $model
+     * @return array
+     */
+    protected function makeFile(LevyResourceModel $model): array
+    {
+        $class = class_entity($model->class_name)
+            ->namespace($model->namespace)
+            ->extend(JsonResource::class);
+
+        $method = $class->method('toArray');
+        $method->param('request');
+        $method->line('return parent::toArray($request);');
+        $method->doc(function (DocumentorEntity $entity) {
+            $entity->description('Transform the resource into an array.');
+            $entity->tagParam(\Illuminate\Http\Request::class, 'request');
+            $entity->tagReturn('array');
+        });
+
+        return [
+            app_path("Http/Resources/{$model->class_name}.php"),
+            $class->wrap('php')->render(),
+            false
+        ];
     }
 }
