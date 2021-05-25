@@ -5,6 +5,7 @@ namespace Bfg\Scaffold\Listeners;
 use Bfg\Entity\Core\Entities\DocumentorEntity;
 use Bfg\Scaffold\LevyModel\LevyFieldModel;
 use Bfg\Scaffold\LevyModel\LevyModel;
+use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -62,16 +63,6 @@ class MakeModelListen extends ListenerControl
             $class->prop('protected:primaryKey', $model->foreign);
         }
 
-        $attrs = $model->fields
-            ->sortBy('order')
-            ->pluck('default', 'name')
-            ->filter(fn($i) => !is_null($i) && $i !== 'id' && $i !== 'created_at' && $i !== 'updated_at')
-            ->toArray();
-
-        if (count($attrs)) {
-            $class->prop('protected:attributes', $attrs);
-        }
-
         $class->prop(
             'protected:fillable',
             $model->fields->sortBy('order')->pluck('name')
@@ -81,9 +72,19 @@ class MakeModelListen extends ListenerControl
         $class->prop(
             'protected:casts',
             $model->fields->sortBy('order')->mapWithKeys(function (LevyFieldModel $model) {
-                return $model->cast ? [$model->name => $model->cast] : [];
+                return $model->cast ? [$model->name => $this->makeCast($model)] : [];
             })->filter(fn($i, $k) => $k !== 'id' && $k !== 'created_at' && $k !== 'updated_at')->toArray()
         );
+
+        $attrs = $model->fields
+            ->sortBy('order')
+            ->pluck('default', 'name')
+            ->filter(fn($i) => !is_null($i) && $i !== 'id' && $i !== 'created_at' && $i !== 'updated_at')
+            ->toArray();
+
+        if (count($attrs)) {
+            $class->prop('protected:attributes', $attrs);
+        }
 
         if ($model->observer) {
 
@@ -109,5 +110,55 @@ class MakeModelListen extends ListenerControl
             $model->file,
             $class->wrap('php')->render()
         ];
+    }
+
+    protected function makeCast(LevyFieldModel $model)
+    {
+        if (!$model->cast_class) {
+
+            return $model->cast;
+        }
+
+        $class = class_entity($model->cast_class_name)
+            ->namespace($model->cast_namespace)
+            ->implement(CastsAttributes::class);
+
+        $method_get = $class->method('get');
+        $method_get->param('model')
+            ->param('key')
+            ->param('value')
+            ->param('attributes');
+        $method_get->line("return \$value;");
+        $method_get->doc(function (DocumentorEntity $entity) use ($model) {
+            $entity->description('Cast the given value.');
+            $entity->tagParam($model->parent->class, 'model');
+            $entity->tagParam('string', 'key');
+            $entity->tagParam('mixed', 'value');
+            $entity->tagParam('array', 'attributes');
+            $entity->tagReturn('mixed');
+        });
+
+        $method_set = $class->method('set');
+        $method_set->param('model')
+            ->param('key')
+            ->param('value')
+            ->param('attributes');
+        $method_set->line("return \$value;");
+        $method_set->doc(function (DocumentorEntity $entity) use ($model) {
+            $entity->description('Prepare the given value for storage.');
+            $entity->tagParam($model->parent->class, 'model');
+            $entity->tagParam('string', 'key');
+            $entity->tagParam('mixed', 'value');
+            $entity->tagParam('array', 'attributes');
+            $entity->tagReturn('mixed');
+        });
+
+        $this->storage()->store(
+            app_path("Casts/{$model->cast_class_name}.php"),
+            $class->wrap('php')->render(),
+            false
+        )->save();
+
+        return entity($model->cast_class . "::class");
     }
 }
