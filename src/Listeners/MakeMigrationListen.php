@@ -51,16 +51,12 @@ class MakeMigrationListen extends ListenerControl
         $files[] = $this->makeFile($model->table_model);
         static::$iterator--;
 
-        foreach ($model->model_dependent_tables as $dependent_table) {
-            $files[] = $this->makeFile($dependent_table, static::$iterator_add);
-            static::$iterator_add--;
-        }
-
         $this->storage()->many_store($files);
     }
 
     /**
      * @param  LevyDependentTableModel  $model
+     * @param  int|null  $i
      * @return array
      */
     protected function makeFile(
