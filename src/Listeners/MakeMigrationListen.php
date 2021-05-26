@@ -20,6 +20,11 @@ class MakeMigrationListen extends ListenerControl
     static ?int $iterator = null;
 
     /**
+     * @var int|null
+     */
+    static ?int $iterator_add = null;
+
+    /**
      * Handle the event.
      *
      * @param  LevyModel  $model
@@ -29,22 +34,26 @@ class MakeMigrationListen extends ListenerControl
     {
         if (static::$iterator === null) {
 
-            static::$iterator = 9999;
+            static::$iterator = 5555;
+        }
+        if (static::$iterator_add === null) {
+
+            static::$iterator_add = 9999;
         }
 
         $files = [];
 
         foreach ($model->dependent_tables as $dependent_table) {
-            $files[] = $this->makeFile($dependent_table);
-            static::$iterator--;
+            $files[] = $this->makeFile($dependent_table, static::$iterator_add);
+            static::$iterator_add--;
         }
 
         $files[] = $this->makeFile($model->table_model);
         static::$iterator--;
 
         foreach ($model->model_dependent_tables as $dependent_table) {
-            $files[] = $this->makeFile($dependent_table);
-            static::$iterator--;
+            $files[] = $this->makeFile($dependent_table, static::$iterator_add);
+            static::$iterator_add--;
         }
 
         $this->storage()->many_store($files);
@@ -55,7 +64,8 @@ class MakeMigrationListen extends ListenerControl
      * @return array
      */
     protected function makeFile(
-        LevyDependentTableModel $model
+        LevyDependentTableModel $model,
+        int $i = null
     ): array {
         $class = class_entity($model->class_name);
         $class->extend(Migration::class)
@@ -87,7 +97,7 @@ class MakeMigrationListen extends ListenerControl
         $method_down->line("Schema::dropIfExists('{$model->name}');");
 
         return [
-            str_replace('{prefix}', $this->getDatePrefix(), $model->file),
+            str_replace('{prefix}', $this->getDatePrefix($i), $model->file),
             $class->wrap('php')->render()
         ];
     }
@@ -95,10 +105,10 @@ class MakeMigrationListen extends ListenerControl
     /**
      * @return string
      */
-    protected function getDatePrefix(): string
+    protected function getDatePrefix(int $i = null): string
     {
         $z = 4 - strlen((string)static::$iterator);
         $z = $z < 0 ? 0 : $z;
-        return date('Y_m_d_H').str_repeat('0', $z).static::$iterator;//.(static::$iterator <= 9 ? "0".static::$iterator : static::$iterator);
+        return date('Y_m_d_H').str_repeat('0', $z).($i === null ? static::$iterator : $i);
     }
 }
