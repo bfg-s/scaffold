@@ -66,20 +66,20 @@ class MakeModelListen extends ListenerControl
         $class->prop(
             'protected:fillable',
             $model->fields->sortBy('order')->pluck('name')
-                ->filter(fn($k) => $k !== 'id' && $k !== 'created_at' && $k !== 'updated_at')->toArray()
+                ->filter(fn($k) => $k !== 'id' && $k !== 'created_at' && $k !== 'updated_at' && $k !== 'deleted_at')->toArray()
         );
 
         $class->prop(
             'protected:casts',
             $model->fields->sortBy('order')->mapWithKeys(function (LevyFieldModel $model) {
                 return $model->cast ? [$model->name => $this->makeCast($model)] : [];
-            })->filter(fn($i, $k) => $k !== 'id' && $k !== 'created_at' && $k !== 'updated_at')->toArray()
+            })->filter(fn($i, $k) => $k !== 'id' && $k !== 'created_at' && $k !== 'updated_at' && $k !== 'deleted_at')->toArray()
         );
 
         $attrs = $model->fields
             ->sortBy('order')
             ->pluck('default', 'name')
-            ->filter(fn($i) => !is_null($i) && $i !== 'id' && $i !== 'created_at' && $i !== 'updated_at')
+            ->filter(fn($i) => !is_null($i) && $i !== 'id' && $i !== 'created_at' && $i !== 'updated_at' && $i !== 'deleted_at')
             ->toArray();
 
         if (count($attrs)) {
