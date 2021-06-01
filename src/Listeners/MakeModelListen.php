@@ -34,8 +34,14 @@ class MakeModelListen extends ListenerControl
     protected function makeFile(LevyModel $model): array
     {
         $class = class_entity($model->class_name)
-            ->namespace($model->namespace)
-            ->extend(Model::class);
+            ->namespace($model->namespace);
+
+        if ($model->auth) {
+            $class->use('Illuminate\Foundation\Auth\User as Authenticatable');
+            $class->extend(entity('Authenticatable'));
+        } else {
+            $class->extend(Model::class);
+        }
 
         foreach ($model->traits as $trait) {
             $class->addTrait($trait->class);

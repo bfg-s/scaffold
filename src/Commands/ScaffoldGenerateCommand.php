@@ -53,7 +53,7 @@ class ScaffoldGenerateCommand extends Command
 
             foreach ($diffs as $key => $diff) {
                 $f = str_replace(base_path(), '', $diff);
-                if ($this->confirm("The [$f] file has been modified! Overwrite the file?")) {
+                if ($this->confirm("The [$f] file has been modified! Overwrite the file?", false)) {
                     unset($diffs[$key]);
                 }
             }
