@@ -92,6 +92,21 @@ class MakeModelListen extends ListenerControl
             $class->prop('protected:attributes', $attrs);
         }
 
+
+        // ToDo: Move to documentation
+        if ($model->hidden) {
+            $class->prop('protected:hidden', $model->hidden);
+        }
+        if ($model->appends) {
+            $class->prop('protected:appends', $model->appends);
+        }
+        if ($model->with) {
+            $class->prop('protected:with', $model->with);
+        }
+        if ($model->with_count) {
+            $class->prop('protected:withCount', $model->with_count);
+        }
+
         if ($model->observer) {
 
             $method = $class->method('boot')->modifier('protected static');
