@@ -23,7 +23,10 @@
     "autoload": {
         "psr-4": {
             "Bfg\\Scaffold\\": "src"
-        }
+        },
+        "files": [
+            "helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
