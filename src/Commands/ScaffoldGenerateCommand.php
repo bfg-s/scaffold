@@ -15,7 +15,7 @@ class ScaffoldGenerateCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'scaffold {name? : By default [scaffold]} {-f|force? : Force clear}';
+    protected $signature = 'scaffold {name? : By default [scaffold]}';
 
     /**
      * The console command description.
