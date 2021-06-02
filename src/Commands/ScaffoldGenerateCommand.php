@@ -49,7 +49,7 @@ class ScaffoldGenerateCommand extends Command
         if (is_file($path)) {
             $storage = \Scaffold::storage()->init();
 
-            $diffs = $storage->diffs();
+            $diffs = []; //$storage->diffs();
 
             foreach ($diffs as $key => $diff) {
                 $f = str_replace(base_path(), '', $diff);
