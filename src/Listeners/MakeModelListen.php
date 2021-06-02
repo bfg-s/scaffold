@@ -59,28 +59,43 @@ class MakeModelListen extends ListenerControl
             }
         }
 
-        $class->prop('protected:table', $model->table);
+        $class->prop('protected:table', $model->table)->doc(function (DocumentorEntity $entity) {
+            $entity->description('The table associated with the model.');
+            $entity->tagReturn('string');
+        });
 
         if (!$model->created && !$model->updated) {
-            $class->prop('public:timestamps', false);
+            $class->prop('public:timestamps', false)->doc(function (DocumentorEntity $entity) {
+                $entity->description('Disable the timestamp.');
+                $entity->tagReturn('bool');
+            });
         }
 
         if ($model->foreign && $model->foreign != 'id') {
-            $class->prop('protected:primaryKey', $model->foreign);
+            $class->prop('protected:primaryKey', $model->foreign)->doc(function (DocumentorEntity $entity) {
+                $entity->description('The primary key for the model.');
+                $entity->tagReturn('string');
+            });
         }
 
         $class->prop(
             'protected:fillable',
             $model->fields->sortBy('order')->pluck('name')
                 ->filter(fn($k) => $k !== 'id' && $k !== 'created_at' && $k !== 'updated_at' && $k !== 'deleted_at')->toArray()
-        );
+        )->doc(function (DocumentorEntity $entity) {
+            $entity->description('The attributes that are mass assignable.');
+            $entity->tagReturn('array');
+        });
 
         $class->prop(
             'protected:casts',
             $model->fields->sortBy('order')->mapWithKeys(function (LevyFieldModel $model) {
                 return $model->cast ? [$model->name => $this->makeCast($model)] : [];
             })->filter(fn($i, $k) => $k !== 'id' && $k !== 'created_at' && $k !== 'updated_at' && $k !== 'deleted_at')->toArray()
-        );
+        )->doc(function (DocumentorEntity $entity) {
+            $entity->description('The attributes that should be cast.');
+            $entity->tagReturn('array');
+        });
 
         $attrs = $model->fields
             ->sortBy('order')
@@ -89,22 +104,37 @@ class MakeModelListen extends ListenerControl
             ->toArray();
 
         if (count($attrs)) {
-            $class->prop('protected:attributes', $attrs);
+            $class->prop('protected:attributes', $attrs)->doc(function (DocumentorEntity $entity) {
+                $entity->description('The model\'s attributes.');
+                $entity->tagReturn('array');
+            });
         }
 
 
         // ToDo: Move to documentation
         if ($model->hidden) {
-            $class->prop('protected:hidden', $model->hidden);
+            $class->prop('protected:hidden', $model->hidden)->doc(function (DocumentorEntity $entity) {
+                $entity->description('The attributes that should be hidden for serialization.');
+                $entity->tagReturn('array');
+            });
         }
         if ($model->appends) {
-            $class->prop('protected:appends', $model->appends);
+            $class->prop('protected:appends', $model->appends)->doc(function (DocumentorEntity $entity) {
+                $entity->description('The accessors to append to the model\'s array form.');
+                $entity->tagReturn('string');
+            });
         }
         if ($model->with) {
-            $class->prop('protected:with', $model->with);
+            $class->prop('protected:with', $model->with)->doc(function (DocumentorEntity $entity) {
+                $entity->description('The relations to eager load on every query.');
+                $entity->tagReturn('string');
+            });
         }
         if ($model->with_count) {
-            $class->prop('protected:withCount', $model->with_count);
+            $class->prop('protected:withCount', $model->with_count)->doc(function (DocumentorEntity $entity) {
+                $entity->description('The relationship counts that should be eager loaded on every query.');
+                $entity->tagReturn('string');
+            });
         }
 
         if ($model->observer) {
@@ -133,7 +163,11 @@ class MakeModelListen extends ListenerControl
         ];
     }
 
-    protected function makeCast(LevyFieldModel $model)
+    /**
+     * @param  LevyFieldModel  $model
+     * @return \Bfg\Entity\Core\EntityPhp|string|null
+     */
+    protected function makeCast(LevyFieldModel $model): \Bfg\Entity\Core\EntityPhp|string|null
     {
         if (!$model->cast_class) {
 
