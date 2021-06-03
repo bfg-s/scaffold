@@ -2,6 +2,7 @@
 
 namespace Bfg\Scaffold;
 
+use Bfg\Scaffold\Commands\FoolFreshCommand;
 use Bfg\Scaffold\Commands\ScaffoldClearCommand;
 use Bfg\Scaffold\Commands\ScaffoldGenerateCommand;
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
@@ -21,6 +22,7 @@ class ServiceProvider extends IlluminateServiceProvider
         $this->commands([
             ScaffoldGenerateCommand::class,
             ScaffoldClearCommand::class,
+            FoolFreshCommand::class,
         ]);
     }
 
