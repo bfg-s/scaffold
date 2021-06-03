@@ -63,11 +63,11 @@ class FoolFreshCommand extends Command
         }
 
         $this->call(ScaffoldGenerateCommand::class, [
-            'force' => true
+            '--force' => true
         ]);
 
         $this->call('migrate:fresh', [
-            'seed' => true
+            '--seed' => true
         ]);
 
         foreach (static::$after as $item) {
