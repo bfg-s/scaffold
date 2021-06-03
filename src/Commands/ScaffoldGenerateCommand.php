@@ -15,7 +15,7 @@ class ScaffoldGenerateCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'scaffold {name? : By default [scaffold]}';
+    protected $signature = 'scaffold {name? : By default [scaffold]} {--f|force : Force update}';
 
     /**
      * The console command description.
@@ -49,7 +49,7 @@ class ScaffoldGenerateCommand extends Command
         if (is_file($path)) {
             $storage = \Scaffold::storage()->init();
 
-            $diffs = []; //$storage->diffs();
+            $diffs = $storage->diffs();
 
             foreach ($diffs as $key => $diff) {
                 $f = str_replace(base_path(), '', $diff);
@@ -72,7 +72,7 @@ class ScaffoldGenerateCommand extends Command
                 $collect->render(
                     config('scaffold.scaffolding_listeners', [])
                 );
-                $this->info('Done!');
+                $this->info('The scaffolding completed its work successfully!');
             } else {
                 $this->error("Complete the scaffolding file!");
             }
