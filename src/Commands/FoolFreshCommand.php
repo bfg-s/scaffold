@@ -15,7 +15,7 @@ class FoolFreshCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'fool:fresh {--c : Composer dump-autoload}';
+    protected $signature = 'fool:fresh {--c|composer : Composer dump-autoload}';
 
     /**
      * The console command description.
@@ -70,7 +70,7 @@ class FoolFreshCommand extends Command
             '--seed' => true
         ]);
 
-        if ($this->option('c')) {
+        if ($this->option('composer')) {
 
             system('composer dump-autoload');
         }
