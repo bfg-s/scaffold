@@ -59,20 +59,23 @@ class MakeModelListen extends ListenerControl
             }
         }
 
-        $class->prop('protected:table', $model->table)->doc(function (DocumentorEntity $entity) {
+        $class->prop('protected:table', $model->table)->doc(function ($entity) {
+            /** @var DocumentorEntity $entity */
             $entity->description('The table associated with the model.');
             $entity->tagReturn('string');
         });
 
         if (!$model->created && !$model->updated) {
-            $class->prop('public:timestamps', false)->doc(function (DocumentorEntity $entity) {
+            $class->prop('public:timestamps', false)->doc(function ($entity) {
+                /** @var DocumentorEntity $entity */
                 $entity->description('Disable the timestamp.');
                 $entity->tagReturn('bool');
             });
         }
 
         if ($model->foreign && $model->foreign != 'id') {
-            $class->prop('protected:primaryKey', $model->foreign)->doc(function (DocumentorEntity $entity) {
+            $class->prop('protected:primaryKey', $model->foreign)->doc(function ($entity) {
+                /** @var DocumentorEntity $entity */
                 $entity->description('The primary key for the model.');
                 $entity->tagReturn('string');
             });
@@ -82,7 +85,8 @@ class MakeModelListen extends ListenerControl
             'protected:fillable',
             $model->fields->sortBy('order')->pluck('name')
                 ->filter(fn($k) => $k !== 'id' && $k !== 'created_at' && $k !== 'updated_at' && $k !== 'deleted_at')->toArray()
-        )->doc(function (DocumentorEntity $entity) {
+        )->doc(function ($entity) {
+            /** @var DocumentorEntity $entity */
             $entity->description('The attributes that are mass assignable.');
             $entity->tagReturn('array');
         });
@@ -92,7 +96,8 @@ class MakeModelListen extends ListenerControl
             $model->fields->sortBy('order')->mapWithKeys(function (LevyFieldModel $model) {
                 return $model->cast ? [$model->name => $this->makeCast($model)] : [];
             })->filter(fn($i, $k) => $k !== 'id' && $k !== 'created_at' && $k !== 'updated_at' && $k !== 'deleted_at')->toArray()
-        )->doc(function (DocumentorEntity $entity) {
+        )->doc(function ($entity) {
+            /** @var DocumentorEntity $entity */
             $entity->description('The attributes that should be cast.');
             $entity->tagReturn('array');
         });
@@ -104,7 +109,8 @@ class MakeModelListen extends ListenerControl
             ->toArray();
 
         if (count($attrs)) {
-            $class->prop('protected:attributes', $attrs)->doc(function (DocumentorEntity $entity) {
+            $class->prop('protected:attributes', $attrs)->doc(function ($entity) {
+                /** @var DocumentorEntity $entity */
                 $entity->description('The model\'s attributes.');
                 $entity->tagReturn('array');
             });
@@ -113,25 +119,29 @@ class MakeModelListen extends ListenerControl
 
         // ToDo: Move to documentation
         if ($model->hidden) {
-            $class->prop('protected:hidden', $model->hidden)->doc(function (DocumentorEntity $entity) {
+            $class->prop('protected:hidden', $model->hidden)->doc(function ($entity) {
+                /** @var DocumentorEntity $entity */
                 $entity->description('The attributes that should be hidden for serialization.');
                 $entity->tagReturn('array');
             });
         }
         if ($model->appends) {
-            $class->prop('protected:appends', $model->appends)->doc(function (DocumentorEntity $entity) {
+            $class->prop('protected:appends', $model->appends)->doc(function ($entity) {
+                /** @var DocumentorEntity $entity */
                 $entity->description('The accessors to append to the model\'s array form.');
                 $entity->tagReturn('string');
             });
         }
         if ($model->with) {
-            $class->prop('protected:with', $model->with)->doc(function (DocumentorEntity $entity) {
+            $class->prop('protected:with', $model->with)->doc(function ($entity) {
+                /** @var DocumentorEntity $entity */
                 $entity->description('The relations to eager load on every query.');
                 $entity->tagReturn('string');
             });
         }
         if ($model->with_count) {
-            $class->prop('protected:withCount', $model->with_count)->doc(function (DocumentorEntity $entity) {
+            $class->prop('protected:withCount', $model->with_count)->doc(function ($entity) {
+                /** @var DocumentorEntity $entity */
                 $entity->description('The relationship counts that should be eager loaded on every query.');
                 $entity->tagReturn('string');
             });
@@ -140,7 +150,8 @@ class MakeModelListen extends ListenerControl
         if ($model->observer) {
 
             $method = $class->method('boot')->modifier('protected static');
-            $method->doc(function (DocumentorEntity $entity) {
+            $method->doc(function ($entity) {
+                /** @var DocumentorEntity $entity */
                 $entity->description('Bootstrap the model and its traits.');
                 $entity->tagReturn('void');
             });
@@ -150,7 +161,8 @@ class MakeModelListen extends ListenerControl
 
         foreach ($model->relations as $relation) {
             $method = $class->method($relation->relation_name)->returnType($relation->relation->relation_class);
-            $method->doc(function (DocumentorEntity $entity) use ($relation) {
+            $method->doc(function ($entity) use ($relation) {
+                /** @var DocumentorEntity $entity */
                 $entity->tagReturn($relation->relation->relation_class);
             });
             $method->line("return \$this->{$relation->name}(".implode(', ',
@@ -184,7 +196,8 @@ class MakeModelListen extends ListenerControl
             ->param('value')
             ->param('attributes');
         $method_get->line("return \$value;");
-        $method_get->doc(function (DocumentorEntity $entity) use ($model) {
+        $method_get->doc(function ($entity) use ($model) {
+            /** @var DocumentorEntity $entity */
             $entity->description('Cast the given value.');
             $entity->tagParam($model->parent->class, 'model');
             $entity->tagParam('string', 'key');
@@ -199,7 +212,8 @@ class MakeModelListen extends ListenerControl
             ->param('value')
             ->param('attributes');
         $method_set->line("return \$value;");
-        $method_set->doc(function (DocumentorEntity $entity) use ($model) {
+        $method_set->doc(function ($entity) use ($model) {
+            /** @var DocumentorEntity $entity */
             $entity->description('Prepare the given value for storage.');
             $entity->tagParam($model->parent->class, 'model');
             $entity->tagParam('string', 'key');

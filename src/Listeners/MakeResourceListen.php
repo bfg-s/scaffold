@@ -44,7 +44,8 @@ class MakeResourceListen extends ListenerControl
         $method = $class->method('toArray');
         $method->param('request');
         $method->line('return parent::toArray($request);');
-        $method->doc(function (DocumentorEntity $entity) {
+        $method->doc(function ($entity) {
+            /** @var DocumentorEntity $entity */
             $entity->description('Transform the resource into an array.');
             $entity->tagParam(\Illuminate\Http\Request::class, 'request');
             $entity->tagReturn('array');

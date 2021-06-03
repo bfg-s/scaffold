@@ -38,7 +38,8 @@ class MakeObserverListen extends ListenerControl
 
                 $method = $class->method($event);
                 $param_name = \Str::singular($model->name);
-                $method->doc(function (DocumentorEntity $entity) use ($event, $model, $param_name) {
+                $method->doc(function ($entity) use ($event, $model, $param_name) {
+                    /** @var DocumentorEntity $entity */
                     $entity->description("Handle the {$model->class_name} \"{$event}\" event.");
                     $entity->tagParam($model->class, $param_name);
                 });

@@ -30,7 +30,8 @@ class MakeRequestListen extends ListenerControl
 
             $method = $class->method('authorize');
             $method->line("return true;");
-            $method->doc(function (DocumentorEntity $entity) {
+            $method->doc(function ($entity) {
+                /** @var DocumentorEntity $entity */
                 $entity->description('Determine if the user is authorized to make this request.');
                 $entity->tagReturn('bool');
             });
@@ -48,7 +49,8 @@ class MakeRequestListen extends ListenerControl
 
             $method = $class->method('rules');
             $method->line("return ".array_entity($rules).";");
-            $method->doc(function (DocumentorEntity $entity) {
+            $method->doc(function ($entity) {
+                /** @var DocumentorEntity $entity */
                 $entity->description('Transform and get a request validated result');
                 $entity->tagReturn('array');
             });
@@ -72,7 +74,8 @@ class MakeRequestListen extends ListenerControl
             ->namespace($model->namespace);
 
         $method = $class->method('passes');
-        $method->doc(function (DocumentorEntity $entity) {
+        $method->doc(function ($entity) {
+            /** @var DocumentorEntity $entity */
             $entity->description('Determine if the validation rule passes.');
             $entity->tagParam('string', 'attribute');
             $entity->tagParam('mixed', 'value');
@@ -83,7 +86,8 @@ class MakeRequestListen extends ListenerControl
         $method->line('return (string)$value === $value;');
 
         $method = $class->method('message');
-        $method->doc(function (DocumentorEntity $entity) {
+        $method->doc(function ($entity) {
+            /** @var DocumentorEntity $entity */
             $entity->description('Get the validation error message.');
             $entity->tagReturn('string');
         });
