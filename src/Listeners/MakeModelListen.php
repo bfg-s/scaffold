@@ -77,7 +77,7 @@ class MakeModelListen extends ListenerControl
             $class->prop('protected:primaryKey', $model->foreign)->doc(function ($entity) {
                 /** @var DocumentorEntity $entity */
                 $entity->description('The primary key for the model.');
-                $entity->tagReturn('string');
+                $entity->tagReturn('string|bool');
             });
         }
 
@@ -129,21 +129,21 @@ class MakeModelListen extends ListenerControl
             $class->prop('protected:appends', $model->appends)->doc(function ($entity) {
                 /** @var DocumentorEntity $entity */
                 $entity->description('The accessors to append to the model\'s array form.');
-                $entity->tagReturn('string');
+                $entity->tagReturn('array');
             });
         }
         if ($model->with) {
             $class->prop('protected:with', $model->with)->doc(function ($entity) {
                 /** @var DocumentorEntity $entity */
                 $entity->description('The relations to eager load on every query.');
-                $entity->tagReturn('string');
+                $entity->tagReturn('array');
             });
         }
         if ($model->with_count) {
             $class->prop('protected:withCount', $model->with_count)->doc(function ($entity) {
                 /** @var DocumentorEntity $entity */
                 $entity->description('The relationship counts that should be eager loaded on every query.');
-                $entity->tagReturn('string');
+                $entity->tagReturn('array');
             });
         }
 
