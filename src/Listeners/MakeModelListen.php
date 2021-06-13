@@ -3,6 +3,7 @@
 namespace Bfg\Scaffold\Listeners;
 
 use Bfg\Entity\Core\Entities\DocumentorEntity;
+use Bfg\Scaffold\LevyModel\LevyConstModel;
 use Bfg\Scaffold\LevyModel\LevyFieldModel;
 use Bfg\Scaffold\LevyModel\LevyModel;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
@@ -163,6 +164,9 @@ class MakeModelListen extends ListenerControl
             $method = $class->method($relation->relation_name)->returnType($relation->relation->relation_class);
             $method->doc(function ($entity) use ($relation) {
                 /** @var DocumentorEntity $entity */
+                /** @var LevyConstModel $related_name */
+                $related_name = $relation->related->constants->where('name', 'title')->first();
+                $entity->description("The \"{$relation->name}\" relation" . ($related_name ? " for \"{$related_name->value}\"" : ""));
                 $entity->tagReturn($relation->relation->relation_class);
             });
             $method->line("return \$this->{$relation->name}(".implode(', ',
