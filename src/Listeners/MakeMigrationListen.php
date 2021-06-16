@@ -34,11 +34,11 @@ class MakeMigrationListen extends ListenerControl
     {
         if (static::$iterator === null) {
 
-            static::$iterator = 5555;
+            static::$iterator = 555555;
         }
         if (static::$iterator_add === null) {
 
-            static::$iterator_add = 9999;
+            static::$iterator_add = 999999;
         }
 
         $files = [];
@@ -104,9 +104,9 @@ class MakeMigrationListen extends ListenerControl
      */
     protected function getDatePrefix(int $i = null): string
     {
-        $z = 4 - strlen((string)static::$iterator);
+        $z = 6 - strlen((string)static::$iterator);
         $z = $z < 0 ? 0 : $z;
-        return "2020_07_02_00".str_repeat('0', $z).($i === null ? static::$iterator : $i);
+        return "2020_07_02_".str_repeat('0', $z).($i === null ? static::$iterator : $i);
         //return date('Y_m_d_H').str_repeat('0', $z).($i === null ? static::$iterator : $i);
     }
 }
