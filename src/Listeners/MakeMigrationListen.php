@@ -34,7 +34,7 @@ class MakeMigrationListen extends ListenerControl
     {
         if (static::$iterator === null) {
 
-            static::$iterator = 555555;
+            static::$iterator = 888888;
         }
         if (static::$iterator_add === null) {
 
