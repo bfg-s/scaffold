@@ -99,12 +99,14 @@ class MakeMigrationListen extends ListenerControl
     }
 
     /**
+     * @param  int|null  $i
      * @return string
      */
     protected function getDatePrefix(int $i = null): string
     {
         $z = 4 - strlen((string)static::$iterator);
         $z = $z < 0 ? 0 : $z;
-        return date('Y_m_d_H').str_repeat('0', $z).($i === null ? static::$iterator : $i);
+        return "2019_08_20_00".str_repeat('0', $z).($i === null ? static::$iterator : $i);
+        //return date('Y_m_d_H').str_repeat('0', $z).($i === null ? static::$iterator : $i);
     }
 }
