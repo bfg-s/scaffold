@@ -75,8 +75,12 @@ class MakeMigrationListen extends ListenerControl
             $method_up->noAutoDoc();
         }
         $method_up->line("Schema::create('{$model->name}', function (Blueprint \$table) {");
+        $timestamps = [];
         /** @var LevyFieldModel $field */
         foreach ($model->fields->sortBy('order') as $field) {
+            if ($field->name == 'created_at' || $field->name == 'updated_at') {
+                $timestamps[] = $field;
+            }
             $cmtp = count($field->migration_type_params);
 
             $line = "\$table->{$field->type}('{$field->name}'".
@@ -88,6 +92,23 @@ class MakeMigrationListen extends ListenerControl
             }
 
             $method_up->tab($line.';');
+        }
+        if (count($timestamps) == 2) {
+            $method_up->tab("\$table->timestamps();");
+        } else {
+            foreach ($timestamps as $field) {
+                $cmtp = count($field->migration_type_params);
+
+                $line = "\$table->{$field->type}('{$field->name}'".
+                    ($cmtp ? ', '.implode(', ',
+                            $this->formatArray($field->migration_type_params)) : '').")";
+
+                foreach ($field->migration_params as $func => $migration_param) {
+                    $line .= "->{$func}(".implode(",", $this->formatArray((array)$migration_param)).")";
+                }
+
+                $method_up->tab($line.';');
+            }
         }
         $method_up->line("});");
 
