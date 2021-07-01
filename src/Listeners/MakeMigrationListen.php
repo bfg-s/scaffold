@@ -80,6 +80,7 @@ class MakeMigrationListen extends ListenerControl
         foreach ($model->fields->sortBy('order') as $field) {
             if ($field->name == 'created_at' || $field->name == 'updated_at') {
                 $timestamps[] = $field;
+                continue;
             }
             $cmtp = count($field->migration_type_params);
 
