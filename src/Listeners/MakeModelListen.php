@@ -37,6 +37,11 @@ class MakeModelListen extends ListenerControl
         $class = class_entity($model->class_name)
             ->namespace($model->namespace);
 
+        if (!config('scaffold.doc_block.class.model')) {
+
+            $class->doc(function () {});
+        }
+
         if ($model->auth) {
             $class->use('Illuminate\Foundation\Auth\User as Authenticatable');
             $class->extend(entity('Authenticatable'));
@@ -61,59 +66,76 @@ class MakeModelListen extends ListenerControl
         }
 
         $class->prop('protected:table', $model->table)->doc(function ($entity) {
-            /** @var DocumentorEntity $entity */
-            $entity->description('The table associated with the model.');
-            $entity->tagReturn('string');
+            if (config('scaffold.doc_block.props.table')) {
+                /** @var DocumentorEntity $entity */
+                $entity->description('The table associated with the model.');
+                $entity->tagReturn('string');
+            }
         });
 
         if (!$model->created && !$model->updated) {
             $class->prop('public:timestamps', false)->doc(function ($entity) {
-                /** @var DocumentorEntity $entity */
-                $entity->description('Disable the timestamp.');
-                $entity->tagReturn('bool');
+                if (config('scaffold.doc_block.props.timestamps')) {
+                    /** @var DocumentorEntity $entity */
+                    $entity->description('Disable the timestamp.');
+                    $entity->tagReturn('bool');
+                }
             });
         }
 
         if ($model->foreign && $model->foreign != 'id') {
             $class->prop('protected:primaryKey', $model->foreign)->doc(function ($entity) {
-                /** @var DocumentorEntity $entity */
-                $entity->description('The primary key for the model.');
-                $entity->tagReturn('string|bool');
+                if (config('scaffold.doc_block.props.primaryKey')) {
+                    /** @var DocumentorEntity $entity */
+                    $entity->description('The primary key for the model.');
+                    $entity->tagReturn('string|bool');
+                }
             });
         }
 
         $class->prop(
             'protected:fillable',
             $model->fields->sortBy('order')->pluck('name')
-                ->filter(fn($k) => $k !== 'id' && $k !== 'created_at' && $k !== 'updated_at' && $k !== 'deleted_at')->toArray()
+                ->filter(fn($k
+                ) => $k !== 'id' && $k !== 'created_at' && $k !== 'updated_at' && $k !== 'deleted_at')->toArray()
         )->doc(function ($entity) {
-            /** @var DocumentorEntity $entity */
-            $entity->description('The attributes that are mass assignable.');
-            $entity->tagReturn('array');
+            if (config('scaffold.doc_block.props.fillable')) {
+                /** @var DocumentorEntity $entity */
+                $entity->description('The attributes that are mass assignable.');
+                $entity->tagReturn('array');
+            }
         });
 
         $class->prop(
             'protected:casts',
             $model->fields->sortBy('order')->mapWithKeys(function (LevyFieldModel $model) {
                 return $model->cast ? [$model->name => $this->makeCast($model)] : [];
-            })->filter(fn($i, $k) => $k !== 'id' && $k !== 'created_at' && $k !== 'updated_at' && $k !== 'deleted_at')->toArray()
+            })->filter(fn(
+                $i,
+                $k
+            ) => $k !== 'id' && $k !== 'created_at' && $k !== 'updated_at' && $k !== 'deleted_at')->toArray()
         )->doc(function ($entity) {
-            /** @var DocumentorEntity $entity */
-            $entity->description('The attributes that should be cast.');
-            $entity->tagReturn('array');
+            if (config('scaffold.doc_block.props.casts')) {
+                /** @var DocumentorEntity $entity */
+                $entity->description('The attributes that should be cast.');
+                $entity->tagReturn('array');
+            }
         });
 
         $attrs = $model->fields
             ->sortBy('order')
             ->pluck('default', 'name')
-            ->filter(fn($i) => !is_null($i) && $i !== 'id' && $i !== 'created_at' && $i !== 'updated_at' && $i !== 'deleted_at')
+            ->filter(fn($i
+            ) => !is_null($i) && $i !== 'id' && $i !== 'created_at' && $i !== 'updated_at' && $i !== 'deleted_at')
             ->toArray();
 
         if (count($attrs)) {
             $class->prop('protected:attributes', $attrs)->doc(function ($entity) {
-                /** @var DocumentorEntity $entity */
-                $entity->description('The model\'s attributes.');
-                $entity->tagReturn('array');
+                if (config('scaffold.doc_block.props.attributes')) {
+                    /** @var DocumentorEntity $entity */
+                    $entity->description('The model\'s attributes.');
+                    $entity->tagReturn('array');
+                }
             });
         }
 
@@ -121,54 +143,70 @@ class MakeModelListen extends ListenerControl
         // ToDo: Move to documentation
         if ($model->hidden) {
             $class->prop('protected:hidden', $model->hidden)->doc(function ($entity) {
-                /** @var DocumentorEntity $entity */
-                $entity->description('The attributes that should be hidden for serialization.');
-                $entity->tagReturn('array');
+                if (config('scaffold.doc_block.props.hidden')) {
+                    /** @var DocumentorEntity $entity */
+                    $entity->description('The attributes that should be hidden for serialization.');
+                    $entity->tagReturn('array');
+                }
             });
         }
         if ($model->appends) {
             $class->prop('protected:appends', $model->appends)->doc(function ($entity) {
-                /** @var DocumentorEntity $entity */
-                $entity->description('The accessors to append to the model\'s array form.');
-                $entity->tagReturn('array');
+                if (config('scaffold.doc_block.props.appends')) {
+                    /** @var DocumentorEntity $entity */
+                    $entity->description('The accessors to append to the model\'s array form.');
+                    $entity->tagReturn('array');
+                }
             });
         }
         if ($model->with) {
             $class->prop('protected:with', $model->with)->doc(function ($entity) {
-                /** @var DocumentorEntity $entity */
-                $entity->description('The relations to eager load on every query.');
-                $entity->tagReturn('array');
+                if (config('scaffold.doc_block.props.with')) {
+                    /** @var DocumentorEntity $entity */
+                    $entity->description('The relations to eager load on every query.');
+                    $entity->tagReturn('array');
+                }
             });
         }
         if ($model->with_count) {
             $class->prop('protected:withCount', $model->with_count)->doc(function ($entity) {
-                /** @var DocumentorEntity $entity */
-                $entity->description('The relationship counts that should be eager loaded on every query.');
-                $entity->tagReturn('array');
+                if (config('scaffold.doc_block.props.withCount')) {
+                    /** @var DocumentorEntity $entity */
+                    $entity->description('The relationship counts that should be eager loaded on every query.');
+                    $entity->tagReturn('array');
+                }
             });
         }
 
         if ($model->observer) {
-
             $method = $class->method('boot')->modifier('protected static');
-            $method->doc(function ($entity) {
-                /** @var DocumentorEntity $entity */
-                $entity->description('Bootstrap the model and its traits.');
-                $entity->tagReturn('void');
-            });
+            if (config('scaffold.doc_block.methods.boot')) {
+                $method->doc(function ($entity) {
+                    /** @var DocumentorEntity $entity */
+                    $entity->description('Bootstrap the model and its traits.');
+                    $entity->tagReturn('void');
+                });
+            } else {
+                $method->noAutoDoc();
+            }
             $method->line("parent::boot();")->line();
             $method->line("static::observe({$model->observer->class}::class);");
         }
 
         foreach ($model->relations as $relation) {
             $method = $class->method($relation->relation_name)->returnType($relation->relation->relation_class);
-            $method->doc(function ($entity) use ($relation) {
-                /** @var DocumentorEntity $entity */
-                /** @var LevyConstModel $related_name */
-                $related_name = $relation->related->constants->where('name', 'title')->first();
-                $entity->description("The \"{$relation->name}\" relation" . ($related_name ? " for \"{$related_name->value}\"" : ""));
-                $entity->tagReturn($relation->relation->relation_class);
-            });
+            if (config('scaffold.doc_block.methods.relation')) {
+                $method->doc(function ($entity) use ($relation) {
+                    /** @var DocumentorEntity $entity */
+                    /** @var LevyConstModel $related_name */
+                    $related_name = $relation->related->constants->where('name', 'title')->first();
+                    $entity->description("The \"{$relation->name}\" relation".($related_name ? " for \"".\Str::ascii($related_name->value,
+                            )."\"" : ""));
+                    $entity->tagReturn($relation->relation->relation_class);
+                });
+            } else {
+                $method->noAutoDoc();
+            }
             $method->line("return \$this->{$relation->name}(".implode(', ',
                     $this->formatArray($relation->relation->relation_params)).");");
         }
@@ -186,7 +224,6 @@ class MakeModelListen extends ListenerControl
     protected function makeCast(LevyFieldModel $model): \Bfg\Entity\Core\EntityPhp|string|null
     {
         if (!$model->cast_class) {
-
             return $model->cast;
         }
 
@@ -200,15 +237,19 @@ class MakeModelListen extends ListenerControl
             ->param('value')
             ->param('attributes');
         $method_get->line("return \$value;");
-        $method_get->doc(function ($entity) use ($model) {
-            /** @var DocumentorEntity $entity */
-            $entity->description('Cast the given value.');
-            $entity->tagParam($model->parent->class, 'model');
-            $entity->tagParam('string', 'key');
-            $entity->tagParam('mixed', 'value');
-            $entity->tagParam('array', 'attributes');
-            $entity->tagReturn('mixed');
-        });
+        if (config('scaffold.doc_block.methods.cast_get')) {
+            $method_get->doc(function ($entity) use ($model) {
+                /** @var DocumentorEntity $entity */
+                $entity->description('Cast the given value.');
+                $entity->tagParam($model->parent->class, 'model');
+                $entity->tagParam('string', 'key');
+                $entity->tagParam('mixed', 'value');
+                $entity->tagParam('array', 'attributes');
+                $entity->tagReturn('mixed');
+            });
+        } else {
+            $method_get->noAutoDoc();
+        }
 
         $method_set = $class->method('set');
         $method_set->param('model')
@@ -216,15 +257,19 @@ class MakeModelListen extends ListenerControl
             ->param('value')
             ->param('attributes');
         $method_set->line("return \$value;");
-        $method_set->doc(function ($entity) use ($model) {
-            /** @var DocumentorEntity $entity */
-            $entity->description('Prepare the given value for storage.');
-            $entity->tagParam($model->parent->class, 'model');
-            $entity->tagParam('string', 'key');
-            $entity->tagParam('mixed', 'value');
-            $entity->tagParam('array', 'attributes');
-            $entity->tagReturn('mixed');
-        });
+        if (config('scaffold.doc_block.methods.cast_set')) {
+            $method_set->doc(function ($entity) use ($model) {
+                /** @var DocumentorEntity $entity */
+                $entity->description('Prepare the given value for storage.');
+                $entity->tagParam($model->parent->class, 'model');
+                $entity->tagParam('string', 'key');
+                $entity->tagParam('mixed', 'value');
+                $entity->tagParam('array', 'attributes');
+                $entity->tagReturn('mixed');
+            });
+        } else {
+            $method_set->noAutoDoc();
+        }
 
         $this->storage()->store(
             app_path("Casts/{$model->cast_class_name}.php"),
@@ -232,6 +277,6 @@ class MakeModelListen extends ListenerControl
             false
         )->save();
 
-        return entity($model->cast_class . "::class");
+        return entity($model->cast_class."::class");
     }
 }

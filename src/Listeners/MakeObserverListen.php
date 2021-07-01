@@ -38,11 +38,15 @@ class MakeObserverListen extends ListenerControl
 
                 $method = $class->method($event);
                 $param_name = \Str::singular($model->name);
-                $method->doc(function ($entity) use ($event, $model, $param_name) {
-                    /** @var DocumentorEntity $entity */
-                    $entity->description("Handle the {$model->class_name} \"{$event}\" event.");
-                    $entity->tagParam($model->class, $param_name);
-                });
+                if (config('scaffold.doc_block.methods.observer_event')) {
+                    $method->doc(function ($entity) use ($event, $model, $param_name) {
+                        /** @var DocumentorEntity $entity */
+                        $entity->description("Handle the {$model->class_name} \"{$event}\" event.");
+                        $entity->tagParam($model->class, $param_name);
+                    });
+                } else {
+                    $method->noAutoDoc();
+                }
                 $method->param($param_name, null, $model->class);
                 $method->line('//');
             }

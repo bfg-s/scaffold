@@ -44,12 +44,16 @@ class MakeResourceListen extends ListenerControl
         $method = $class->method('toArray');
         $method->param('request');
         $method->line('return parent::toArray($request);');
-        $method->doc(function ($entity) {
-            /** @var DocumentorEntity $entity */
-            $entity->description('Transform the resource into an array.');
-            $entity->tagParam(\Illuminate\Http\Request::class, 'request');
-            $entity->tagReturn('array');
-        });
+        if (config('scaffold.doc_block.methods.resource_to_array')) {
+            $method->doc(function ($entity) {
+                /** @var DocumentorEntity $entity */
+                $entity->description('Transform the resource into an array.');
+                $entity->tagParam(\Illuminate\Http\Request::class, 'request');
+                $entity->tagReturn('array');
+            });
+        } else {
+            $method->noAutoDoc();
+        }
 
         return [
             app_path("Http/Resources/{$model->class_name}.php"),

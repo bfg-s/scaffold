@@ -31,9 +31,11 @@ class MakeRequestListen extends ListenerControl
             $method = $class->method('authorize');
             $method->line("return true;");
             $method->doc(function ($entity) {
-                /** @var DocumentorEntity $entity */
-                $entity->description('Determine if the user is authorized to make this request.');
-                $entity->tagReturn('bool');
+                if (config('scaffold.doc_block.methods.request_authorize')) {
+                    /** @var DocumentorEntity $entity */
+                    $entity->description('Determine if the user is authorized to make this request.');
+                    $entity->tagReturn('bool');
+                }
             });
 
             $rules = [];
@@ -50,9 +52,11 @@ class MakeRequestListen extends ListenerControl
             $method = $class->method('rules');
             $method->line("return ".array_entity($rules).";");
             $method->doc(function ($entity) {
-                /** @var DocumentorEntity $entity */
-                $entity->description('Transform and get a request validated result');
-                $entity->tagReturn('array');
+                if (config('scaffold.doc_block.methods.request_rules')) {
+                    /** @var DocumentorEntity $entity */
+                    $entity->description('Transform and get a request validated result');
+                    $entity->tagReturn('array');
+                }
             });
 
             $this->storage()->store(
@@ -75,11 +79,13 @@ class MakeRequestListen extends ListenerControl
 
         $method = $class->method('passes');
         $method->doc(function ($entity) {
-            /** @var DocumentorEntity $entity */
-            $entity->description('Determine if the validation rule passes.');
-            $entity->tagParam('string', 'attribute');
-            $entity->tagParam('mixed', 'value');
-            $entity->tagReturn('bool');
+            if (config('scaffold.doc_block.methods.rule_passes')) {
+                /** @var DocumentorEntity $entity */
+                $entity->description('Determine if the validation rule passes.');
+                $entity->tagParam('string', 'attribute');
+                $entity->tagParam('mixed', 'value');
+                $entity->tagReturn('bool');
+            }
         });
         $method->param('attribute')
             ->param('value');
@@ -87,9 +93,11 @@ class MakeRequestListen extends ListenerControl
 
         $method = $class->method('message');
         $method->doc(function ($entity) {
-            /** @var DocumentorEntity $entity */
-            $entity->description('Get the validation error message.');
-            $entity->tagReturn('string');
+            if (config('scaffold.doc_block.methods.rule_message')) {
+                /** @var DocumentorEntity $entity */
+                $entity->description('Get the validation error message.');
+                $entity->tagReturn('string');
+            }
         });
         $method->line("return 'The validation error message.';");
 

@@ -68,8 +68,12 @@ class MakeMigrationListen extends ListenerControl
             ->use(Blueprint::class);
 
         $method_up = $class->method('up');
-        $method_up->docDescription('Run the migrations.');
-        $method_up->docReturnType('void');
+        if (config('scaffold.doc_block.methods.migration_up')) {
+            $method_up->docDescription('Run the migrations.');
+            $method_up->docReturnType('void');
+        } else {
+            $method_up->noAutoDoc();
+        }
         $method_up->line("Schema::create('{$model->name}', function (Blueprint \$table) {");
         /** @var LevyFieldModel $field */
         foreach ($model->fields->sortBy('order') as $field) {
@@ -88,8 +92,12 @@ class MakeMigrationListen extends ListenerControl
         $method_up->line("});");
 
         $method_down = $class->method('down');
-        $method_down->docDescription('Reverse the migrations.');
-        $method_down->docReturnType('void');
+        if (config('scaffold.doc_block.methods.migration_down')) {
+            $method_down->docDescription('Reverse the migrations.');
+            $method_down->docReturnType('void');
+        } else {
+            $method_down->noAutoDoc();
+        }
         $method_down->line("Schema::dropIfExists('{$model->name}');");
 
         return [
@@ -107,6 +115,5 @@ class MakeMigrationListen extends ListenerControl
         $z = 6 - strlen((string)static::$iterator);
         $z = $z < 0 ? 0 : $z;
         return "2020_07_02_".str_repeat('0', $z).($i === null ? static::$iterator : $i);
-        //return date('Y_m_d_H').str_repeat('0', $z).($i === null ? static::$iterator : $i);
     }
 }
