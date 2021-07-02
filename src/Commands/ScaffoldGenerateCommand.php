@@ -15,7 +15,7 @@ class ScaffoldGenerateCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'scaffold {name? : By default [scaffold]} {--f|force : Force update}';
+    protected $signature = 'scaffold {name? : By default [scaffold]} {--f|force : Force update} {--y|yaml : Make with yaml schema}';
 
     /**
      * The console command description.
@@ -46,6 +46,15 @@ class ScaffoldGenerateCommand extends Command
 
         $path = database_path("{$name}.json");
 
+        $yaml = false;
+
+        if (!is_file($path) || $this->option('yaml')) {
+
+            $path = database_path("{$name}.yaml");
+
+            $yaml = true;
+        }
+
         if (is_file($path)) {
             $storage = \Scaffold::storage()->init();
 
@@ -66,7 +75,7 @@ class ScaffoldGenerateCommand extends Command
 
             $storage->clear();
 
-            $collect = \Scaffold::modelsFromJsonFile($path);
+            $collect = $yaml ? \Scaffold::modelsFromYamlFile($path) : \Scaffold::modelsFromJsonFile($path);
 
             if ($collect->count()) {
                 $collect->render(
@@ -79,9 +88,9 @@ class ScaffoldGenerateCommand extends Command
         } else {
             if ($name === 'scaffold') {
                 file_put_contents($path, "{\n}");
-                $this->info("Scaffold file [database/scaffold.json] created!");
+                $this->info("Scaffold file [database/scaffold.".($yaml ? 'yaml':'json')."] created!");
             } else {
-                $this->error("File [{$path}] not found!");
+                $this->error("File [database/scaffold.".($yaml ? 'yaml':'json')."] not found!");
             }
         }
 
