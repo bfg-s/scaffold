@@ -2,6 +2,7 @@
 
 namespace Bfg\Scaffold;
 
+use Bfg\Scaffold\Exceptions\RequiredNotFound;
 use Bfg\Scaffold\LevyModel\LevyModel;
 use Bfg\Scaffold\LevyModel\LevyModelAbstract;
 use Bfg\Scaffold\LevyPipes\SetPipe;
@@ -16,20 +17,6 @@ use Symfony\Component\Yaml\Yaml;
 class Scaffold
 {
     /**
-     * Force required models in to scaffold
-     *
-     * @var array
-     */
-    protected array $force_required = [];
-
-    /**
-     * Possible required models in to scaffold
-     *
-     * @var array
-     */
-    protected array $required = [];
-
-    /**
      * BlessModel constructor.
      *
      * @param  \Illuminate\Contracts\Container\Container  $container
@@ -39,33 +26,6 @@ class Scaffold
         protected Container $container,
         protected FileStorage $storage,
     ) {
-    }
-
-    /**
-     * Add model to force required scaffold
-     *
-     * @param  array  $model Associated array
-     * @return $this
-     */
-    public function forceRequired(array $model): static
-    {
-        $this->force_required = array_merge_recursive($this->force_required, $model);
-
-        return $this;
-    }
-
-    /**
-     * Add required model to possible model list
-     *
-     * @param  string  $name
-     * @param  array  $model Associated array
-     * @return $this
-     */
-    public function required(string $name, array $model): static
-    {
-        $this->required[$name] = $model;
-
-        return $this;
     }
 
     /**
@@ -131,25 +91,7 @@ class Scaffold
      */
     public function modelsFromArray(array $syntax): \Bfg\Scaffold\LevyCollections\ModelCollection|array|null
     {
-        $syntax = array_merge_recursive($this->force_required, $syntax);
-
-        if (isset($syntax['required'])) {
-            if (is_array($syntax['required']) && !is_assoc($syntax['required'])) {
-                foreach ($syntax['required'] as $require) {
-                    if (
-                        isset($this->required[$require]) &&
-                        is_array($this->required[$require])
-                    ) {
-
-                        $syntax = array_merge_recursive($this->required[$require], $syntax);
-                    }
-                }
-            }
-
-            unset($syntax['required']);
-        }
-
-        foreach ($syntax as $name => $data) {
+        foreach (ScaffoldConstruct::make($syntax) as $name => $data) {
             LevyModel::model($name, $data);
         }
 

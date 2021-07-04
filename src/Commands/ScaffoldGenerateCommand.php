@@ -15,7 +15,10 @@ class ScaffoldGenerateCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'scaffold {name? : By default [scaffold]} {--f|force : Force update} {--y|yaml : Make with yaml schema}';
+    protected $signature = 'scaffold {name? : By default [scaffold]} 
+                            {--f|force : Force update} 
+                            {--r|require=* : Connect the blanks to the builder}
+                            {--y|yaml : Make with yaml schema}';
 
     /**
      * The console command description.
