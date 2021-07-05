@@ -6,6 +6,7 @@ use Bfg\Entity\Core\Entities\DocumentorEntity;
 use Bfg\Scaffold\LevyModel\LevyConstModel;
 use Bfg\Scaffold\LevyModel\LevyFieldModel;
 use Bfg\Scaffold\LevyModel\LevyModel;
+use Bfg\Scaffold\LevyModel\LevyPropertyModel;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 
@@ -176,6 +177,11 @@ class MakeModelListen extends ListenerControl
                     $entity->tagReturn('array');
                 }
             });
+        }
+
+        /** @var LevyPropertyModel $property */
+        foreach ($model->properties as $property) {
+            $class->prop($property->property_name, $property->value);
         }
 
         if ($model->observer) {
