@@ -2,6 +2,8 @@
 
 namespace Bfg\Scaffold\Commands;
 
+use Bfg\Scaffold\ScaffoldCommands;
+use Bfg\Scaffold\ScaffoldConstruct;
 use Illuminate\Console\Command;
 
 /**
@@ -77,6 +79,14 @@ class ScaffoldGenerateCommand extends Command
             }
 
             $storage->clear();
+
+            foreach ($this->option('require') as $item) {
+                if (isset(ScaffoldCommands::$blanc_list[$item])) {
+                    ScaffoldConstruct::blanc(
+                        ScaffoldCommands::$blanc_list[$item]
+                    );
+                }
+            }
 
             $collect = $yaml ? \Scaffold::modelsFromYamlFile($path) : \Scaffold::modelsFromJsonFile($path);
 
