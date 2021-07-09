@@ -181,7 +181,11 @@ class MakeModelListen extends ListenerControl
 
         /** @var LevyPropertyModel $property */
         foreach ($model->properties as $property) {
-            $class->prop($property->property_name, $property->value);
+            $prop = $class->prop($property->property_name, $property->value)
+                ->doc(function () {});
+            if (config('scaffold.doc_block.props.custom')) {
+                $prop->autoDoc();
+            }
         }
 
         if ($model->observer) {
