@@ -25,6 +25,11 @@ class MakeObserverListen extends ListenerControl
             $class = class_entity($model->observer->class_name)
                 ->namespace($model->observer->namespace);
 
+            if (!config('scaffold.doc_block.class.observer')) {
+                $class->doc(function () {
+                });
+            }
+
             foreach ($model->observer->events as $event) {
 
                 /** @var ClassMethodEntity $method */

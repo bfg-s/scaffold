@@ -41,6 +41,11 @@ class MakeTraitListen extends ListenerControl
                 ->traitObject()
                 ->namespace($model->namespace);
 
+            if (!config('scaffold.doc_block.class.trait')) {
+                $class->doc(function () {
+                });
+            }
+
             return [
                 $model->path,
                 $class->wrap('php')->render(),

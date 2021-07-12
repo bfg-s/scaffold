@@ -26,6 +26,11 @@ class MakeFactoryListen extends ListenerControl
                 ->namespace($model->factory->namespace)
                 ->extend(Factory::class);
 
+            if (!config('scaffold.doc_block.class.factory')) {
+                $class->doc(function () {
+                });
+            }
+
             $prop = $class->prop("protected:model", entity($model->class . '::class'));
 
             $prop->doc(function ($doc) {

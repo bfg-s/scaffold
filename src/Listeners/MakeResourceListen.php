@@ -41,6 +41,11 @@ class MakeResourceListen extends ListenerControl
             ->namespace($model->namespace)
             ->extend(JsonResource::class);
 
+        if (!config('scaffold.doc_block.class.resource')) {
+            $class->doc(function () {
+            });
+        }
+
         $method = $class->method('toArray');
         $method->param('request');
         $method->line('return parent::toArray($request);');

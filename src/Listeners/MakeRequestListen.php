@@ -28,6 +28,11 @@ class MakeRequestListen extends ListenerControl
                 ->namespace($model->rules->namespace)
                 ->extend(FormRequest::class);
 
+            if (!config('scaffold.doc_block.class.request')) {
+                $class->doc(function () {
+                });
+            }
+
             $method = $class->method('authorize');
             $method->line("return true;");
             $method->doc(function ($entity) {
@@ -76,6 +81,11 @@ class MakeRequestListen extends ListenerControl
         $class = class_entity($model->class_name)
             ->implement(Rule::class)
             ->namespace($model->namespace);
+
+        if (!config('scaffold.doc_block.class.rule')) {
+            $class->doc(function () {
+            });
+        }
 
         $method = $class->method('passes');
         $method->doc(function ($entity) {

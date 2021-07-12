@@ -33,6 +33,11 @@ class MakeSeedingListen extends ListenerControl
                 ->namespace($model->seed->namespace)
                 ->extend(Seeder::class);
 
+            if (!config('scaffold.doc_block.class.seed')) {
+                $class->doc(function () {
+                });
+            }
+
             $method = $class->method('run');
 
             if ($model->seed->factory) {

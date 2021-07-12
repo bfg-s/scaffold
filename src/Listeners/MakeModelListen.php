@@ -242,6 +242,11 @@ class MakeModelListen extends ListenerControl
             ->namespace($model->cast_namespace)
             ->implement(CastsAttributes::class);
 
+        if (!config('scaffold.doc_block.class.cast')) {
+            $class->doc(function () {
+            });
+        }
+
         $method_get = $class->method('get');
         $method_get->param('model')
             ->param('key')

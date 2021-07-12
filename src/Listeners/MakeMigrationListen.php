@@ -64,6 +64,10 @@ class MakeMigrationListen extends ListenerControl
         int $i = null
     ): array {
         $class = class_entity($model->class_name);
+        if (!config('scaffold.doc_block.class.migrations')) {
+            $class->doc(function () {
+            });
+        }
         $class->extend(Migration::class)
             ->use(Blueprint::class);
 
