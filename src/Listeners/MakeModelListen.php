@@ -39,8 +39,8 @@ class MakeModelListen extends ListenerControl
             ->namespace($model->namespace);
 
         if (!config('scaffold.doc_block.class.model')) {
-            $class->doc(function () {
-            });
+
+            $class->doc(function () {});
         }
 
         if ($model->auth) {
@@ -55,7 +55,7 @@ class MakeModelListen extends ListenerControl
         }
 
         foreach ($model->constants as $constant) {
-            $class->const(strtoupper($constant->name), $this->format($constant->value));
+            $class->const(strtoupper($constant->name), $this->formatString($constant->value));
         }
 
         if ($model->created && !$model->updated) {
@@ -66,7 +66,7 @@ class MakeModelListen extends ListenerControl
             }
         }
 
-        $class->prop('protected:table', $this->format($model->table))->doc(function ($entity) {
+        $class->prop('protected:table', $model->table)->doc(function ($entity) {
             if (config('scaffold.doc_block.props.table')) {
                 /** @var DocumentorEntity $entity */
                 $entity->description('The table associated with the model.');
@@ -85,7 +85,7 @@ class MakeModelListen extends ListenerControl
         }
 
         if ($model->foreign && $model->foreign != 'id') {
-            $class->prop('protected:primaryKey', $this->format($model->foreign))->doc(function ($entity) {
+            $class->prop('protected:primaryKey', $model->foreign)->doc(function ($entity) {
                 if (config('scaffold.doc_block.props.primaryKey')) {
                     /** @var DocumentorEntity $entity */
                     $entity->description('The primary key for the model.');
@@ -96,9 +96,9 @@ class MakeModelListen extends ListenerControl
 
         $class->prop(
             'protected:fillable',
-            $this->format($model->fields->sortBy('order')->pluck('name')
+            $model->fields->sortBy('order')->pluck('name')
                 ->filter(fn($k
-                ) => $k !== 'id' && $k !== 'created_at' && $k !== 'updated_at' && $k !== 'deleted_at')->toArray())
+                ) => $k !== 'id' && $k !== 'created_at' && $k !== 'updated_at' && $k !== 'deleted_at')->toArray()
         )->doc(function ($entity) {
             if (config('scaffold.doc_block.props.fillable')) {
                 /** @var DocumentorEntity $entity */
@@ -109,12 +109,12 @@ class MakeModelListen extends ListenerControl
 
         $class->prop(
             'protected:casts',
-            $this->format($model->fields->sortBy('order')->mapWithKeys(function (LevyFieldModel $model) {
+            $model->fields->sortBy('order')->mapWithKeys(function (LevyFieldModel $model) {
                 return $model->cast ? [$model->name => $this->makeCast($model)] : [];
             })->filter(fn(
                 $i,
                 $k
-            ) => $k !== 'id' && $k !== 'created_at' && $k !== 'updated_at' && $k !== 'deleted_at')->toArray())
+            ) => $k !== 'id' && $k !== 'created_at' && $k !== 'updated_at' && $k !== 'deleted_at')->toArray()
         )->doc(function ($entity) {
             if (config('scaffold.doc_block.props.casts')) {
                 /** @var DocumentorEntity $entity */
@@ -131,7 +131,7 @@ class MakeModelListen extends ListenerControl
             ->toArray();
 
         if (count($attrs)) {
-            $class->prop('protected:attributes', $this->format($attrs))->doc(function ($entity) {
+            $class->prop('protected:attributes', $attrs)->doc(function ($entity) {
                 if (config('scaffold.doc_block.props.attributes')) {
                     /** @var DocumentorEntity $entity */
                     $entity->description('The model\'s attributes.');
@@ -143,7 +143,7 @@ class MakeModelListen extends ListenerControl
 
         // ToDo: Move to documentation
         if ($model->hidden) {
-            $class->prop('protected:hidden', $this->format($model->hidden))->doc(function ($entity) {
+            $class->prop('protected:hidden', $model->hidden)->doc(function ($entity) {
                 if (config('scaffold.doc_block.props.hidden')) {
                     /** @var DocumentorEntity $entity */
                     $entity->description('The attributes that should be hidden for serialization.');
@@ -152,7 +152,7 @@ class MakeModelListen extends ListenerControl
             });
         }
         if ($model->appends) {
-            $class->prop('protected:appends', $this->format($model->appends))->doc(function ($entity) {
+            $class->prop('protected:appends', $model->appends)->doc(function ($entity) {
                 if (config('scaffold.doc_block.props.appends')) {
                     /** @var DocumentorEntity $entity */
                     $entity->description('The accessors to append to the model\'s array form.');
@@ -161,7 +161,7 @@ class MakeModelListen extends ListenerControl
             });
         }
         if ($model->with) {
-            $class->prop('protected:with', $this->format($model->with))->doc(function ($entity) {
+            $class->prop('protected:with', $model->with)->doc(function ($entity) {
                 if (config('scaffold.doc_block.props.with')) {
                     /** @var DocumentorEntity $entity */
                     $entity->description('The relations to eager load on every query.');
@@ -170,7 +170,7 @@ class MakeModelListen extends ListenerControl
             });
         }
         if ($model->with_count) {
-            $class->prop('protected:withCount', $this->format($model->with_count))->doc(function ($entity) {
+            $class->prop('protected:withCount', $model->with_count)->doc(function ($entity) {
                 if (config('scaffold.doc_block.props.withCount')) {
                     /** @var DocumentorEntity $entity */
                     $entity->description('The relationship counts that should be eager loaded on every query.');
@@ -181,9 +181,8 @@ class MakeModelListen extends ListenerControl
 
         /** @var LevyPropertyModel $property */
         foreach ($model->properties as $property) {
-            $prop = $class->prop($property->property_name, $this->format($property->value))
-                ->doc(function () {
-                });
+            $prop = $class->prop($property->property_name, $property->value)
+                ->doc(function () {});
             if (config('scaffold.doc_block.props.custom')) {
                 $prop->autoDoc();
             }
