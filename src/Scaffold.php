@@ -2,9 +2,9 @@
 
 namespace Bfg\Scaffold;
 
-use Bfg\Scaffold\Exceptions\RequiredNotFound;
 use Bfg\Scaffold\LevyModel\LevyModel;
 use Bfg\Scaffold\LevyModel\LevyModelAbstract;
+use Bfg\Scaffold\LevyPipes\LevyModel\DetectRelationsPipe;
 use Bfg\Scaffold\LevyPipes\SetPipe;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Pipeline\Pipeline;
@@ -114,8 +114,25 @@ class Scaffold
     {
         (new Pipeline($this->container))
             ->send($model)
-            ->through(array_merge((array) config('scaffold.parse_pipes.'.$class, []), [
+            ->through(array_merge(config('scaffold.parse_pipes.'.$class, []), [
                 SetPipe::class
             ]))->thenReturn();
+    }
+
+    /**
+     * @param  LevyModelAbstract  $model
+     * @return mixed
+     */
+    public function makeFinishPipe(LevyModelAbstract $model): mixed
+    {
+        if ($model instanceof LevyModel) {
+
+            return (new Pipeline($this->container))
+                ->send($model)
+                ->through([DetectRelationsPipe::class])
+                ->thenReturn();
+        }
+
+        return $model;
     }
 }
