@@ -14,12 +14,6 @@ use Bfg\Scaffold\Commands\ScaffoldGenerateCommand;
 class ServiceProvider extends InstalledProvider
 {
     /**
-     * The description of extension.
-     * @var string|null
-     */
-    public ?string $description = "To design a database and models";
-
-    /**
      * Set as installed by default.
      * @var bool
      */

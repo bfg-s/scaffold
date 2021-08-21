@@ -20,6 +20,11 @@ class MakeSeedingListen extends ListenerControl
     protected static int $seed_count = 0;
 
     /**
+     * @var array
+     */
+    protected static array $lines = [];
+
+    /**
      * Handle the event.
      *
      * @param  LevyModel  $model
@@ -86,29 +91,38 @@ class MakeSeedingListen extends ListenerControl
 
         if (!preg_match("/{$model->seed->class_name}::class/", $file_content)) {
 
+            static::$lines[] = "        \$this->call({$model->seed->class_name}::class);";
+        }
+    }
+
+    public static function finish()
+    {
+        $file = database_path('seeders/DatabaseSeeder.php');
+
+        $file_content = file_get_contents($file);
+
+        if (static::$lines) {
+
             $ref = new \ReflectionClass(DatabaseSeeder::class);
 
             $method = $ref->getMethod('run');
 
-            $to = $method->getEndLine()+static::$seed_count;
-
-            $method_text = file_lines_get_contents($file, $to, $method->getStartLine());
+            $method_text = file_lines_get_contents($file, $method->getEndLine(), $method->getStartLine());
 
             $exploded_method = array_slice(
                 explode("\n", $method_text), 0, -2
             );
 
-            $exploded_method[] = "        \$this->call({$model->seed->class_name}::class);";
+            $exploded_method = array_merge($exploded_method, array_reverse(static::$lines));
+
             $exploded_method[] = "    }";
             $exploded_method[] = "";
 
-            $new_method_text = implode("\n", $exploded_method);
-
-            $new_file_content = str_replace($method_text, $new_method_text, $file_content);
+            $new_file_content = str_replace(
+                $method_text, implode("\n", $exploded_method), $file_content
+            );
 
             file_put_contents($file, $new_file_content);
-
-            static::$seed_count++;
         }
     }
 }
