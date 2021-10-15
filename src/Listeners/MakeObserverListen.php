@@ -7,7 +7,7 @@ use Bfg\Entity\Core\Entities\DocumentorEntity;
 use Bfg\Scaffold\LevyModel\LevyModel;
 
 /**
- * Class MakeObserverListen
+ * Class MakeObserverListen.
  * @package Bfg\Scaffold\Listeners
  */
 class MakeObserverListen extends ListenerControl
@@ -21,11 +21,10 @@ class MakeObserverListen extends ListenerControl
     public function handle(LevyModel $model)
     {
         if ($model->observer) {
-
             $class = class_entity($model->observer->class_name)
                 ->namespace($model->observer->namespace);
 
-            if (!config('scaffold.doc_block.class.observer')) {
+            if (! config('scaffold.doc_block.class.observer')) {
                 $class->doc(function () {
                 });
             }
@@ -40,7 +39,6 @@ class MakeObserverListen extends ListenerControl
                  * @param  \App\Models\Director  $director
                  * @return void
                  */
-
                 $method = $class->method($event);
                 $param_name = \Str::singular($model->name);
                 if (config('scaffold.doc_block.methods.observer_event')) {

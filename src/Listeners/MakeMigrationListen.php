@@ -3,13 +3,13 @@
 namespace Bfg\Scaffold\Listeners;
 
 use Bfg\Scaffold\LevyModel\LevyDependentTableModel;
-use Illuminate\Database\Migrations\Migration;
 use Bfg\Scaffold\LevyModel\LevyFieldModel;
-use Illuminate\Database\Schema\Blueprint;
 use Bfg\Scaffold\LevyModel\LevyModel;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 /**
- * Class MakeMigrationListen
+ * Class MakeMigrationListen.
  * @package Bfg\Scaffold\Listeners
  */
 class MakeMigrationListen extends ListenerControl
@@ -17,12 +17,12 @@ class MakeMigrationListen extends ListenerControl
     /**
      * @var int|null
      */
-    static ?int $iterator = null;
+    public static ?int $iterator = null;
 
     /**
      * @var int|null
      */
-    static ?int $iterator_add = null;
+    public static ?int $iterator_add = null;
 
     /**
      * Handle the event.
@@ -33,11 +33,9 @@ class MakeMigrationListen extends ListenerControl
     public function handle(LevyModel $model)
     {
         if (static::$iterator === null) {
-
             static::$iterator = 888888;
         }
         if (static::$iterator_add === null) {
-
             static::$iterator_add = 999999;
         }
 
@@ -64,7 +62,7 @@ class MakeMigrationListen extends ListenerControl
         int $i = null
     ): array {
         $class = class_entity($model->class_name);
-        if (!config('scaffold.doc_block.class.migrations')) {
+        if (! config('scaffold.doc_block.class.migrations')) {
             $class->doc(function () {
             });
         }
@@ -90,32 +88,32 @@ class MakeMigrationListen extends ListenerControl
 
             $line = "\$table->{$field->type}('{$field->name}'".
                 ($cmtp ? ', '.implode(', ',
-                        $this->formatArray($field->migration_type_params)) : '').")";
+                        $this->formatArray($field->migration_type_params)) : '').')';
 
             foreach ($field->migration_params as $func => $migration_param) {
-                $line .= "->{$func}(".implode(",", $this->formatArray((array)$migration_param)).")";
+                $line .= "->{$func}(".implode(',', $this->formatArray((array) $migration_param)).')';
             }
 
             $method_up->tab($line.';');
         }
         if (count($timestamps) == 2) {
-            $method_up->tab("\$table->timestamps();");
+            $method_up->tab('$table->timestamps();');
         } else {
             foreach ($timestamps as $field) {
                 $cmtp = count($field->migration_type_params);
 
                 $line = "\$table->{$field->type}('{$field->name}'".
                     ($cmtp ? ', '.implode(', ',
-                            $this->formatArray($field->migration_type_params)) : '').")";
+                            $this->formatArray($field->migration_type_params)) : '').')';
 
                 foreach ($field->migration_params as $func => $migration_param) {
-                    $line .= "->{$func}(".implode(",", $this->formatArray((array)$migration_param)).")";
+                    $line .= "->{$func}(".implode(',', $this->formatArray((array) $migration_param)).')';
                 }
 
                 $method_up->tab($line.';');
             }
         }
-        $method_up->line("});");
+        $method_up->line('});');
 
         $method_down = $class->method('down');
         if (config('scaffold.doc_block.methods.migration_down')) {
@@ -128,7 +126,7 @@ class MakeMigrationListen extends ListenerControl
 
         return [
             str_replace('{prefix}', $this->getDatePrefix($i), $model->file),
-            $class->wrap('php')->render()
+            $class->wrap('php')->render(),
         ];
     }
 
@@ -138,8 +136,9 @@ class MakeMigrationListen extends ListenerControl
      */
     protected function getDatePrefix(int $i = null): string
     {
-        $z = 6 - strlen((string)static::$iterator);
+        $z = 6 - strlen((string) static::$iterator);
         $z = $z < 0 ? 0 : $z;
-        return "2020_07_02_".str_repeat('0', $z).($i === null ? static::$iterator : $i);
+
+        return '2020_07_02_'.str_repeat('0', $z).($i === null ? static::$iterator : $i);
     }
 }

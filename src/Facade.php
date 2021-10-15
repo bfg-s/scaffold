@@ -5,7 +5,7 @@ namespace Bfg\Scaffold;
 use Illuminate\Support\Facades\Facade as FacadeIlluminate;
 
 /**
- * Class Facade
+ * Class Facade.
  * @package Bfg\Scaffold
  */
 class Facade extends FacadeIlluminate

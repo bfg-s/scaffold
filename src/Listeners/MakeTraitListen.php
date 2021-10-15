@@ -6,7 +6,7 @@ use Bfg\Scaffold\LevyModel\LevyModel;
 use Bfg\Scaffold\LevyModel\LevyTraitModel;
 
 /**
- * Class MakeTraitListen
+ * Class MakeTraitListen.
  * @package Bfg\Scaffold\Listeners
  */
 class MakeTraitListen extends ListenerControl
@@ -22,7 +22,6 @@ class MakeTraitListen extends ListenerControl
         $files = [];
 
         foreach ($model->traits as $trait) {
-
             $files[] = $this->makeFile($trait);
         }
 
@@ -35,13 +34,12 @@ class MakeTraitListen extends ListenerControl
      */
     protected function makeFile(LevyTraitModel $model): array
     {
-        if (!trait_exists($model->class) && $model->path) {
-
+        if (! trait_exists($model->class) && $model->path) {
             $class = class_entity($model->class_name)
                 ->traitObject()
                 ->namespace($model->namespace);
 
-            if (!config('scaffold.doc_block.class.trait')) {
+            if (! config('scaffold.doc_block.class.trait')) {
                 $class->doc(function () {
                 });
             }
@@ -49,7 +47,7 @@ class MakeTraitListen extends ListenerControl
             return [
                 $model->path,
                 $class->wrap('php')->render(),
-                false
+                false,
             ];
         }
 

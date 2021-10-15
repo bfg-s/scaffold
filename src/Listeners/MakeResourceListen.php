@@ -8,7 +8,7 @@ use Bfg\Scaffold\LevyModel\LevyResourceModel;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * Class MakeResourceListen
+ * Class MakeResourceListen.
  * @package Bfg\Scaffold\Listeners
  */
 class MakeResourceListen extends ListenerControl
@@ -24,7 +24,6 @@ class MakeResourceListen extends ListenerControl
         $files = [];
 
         foreach ($model->resources as $resource) {
-
             $files[] = $this->makeFile($resource);
         }
 
@@ -41,7 +40,7 @@ class MakeResourceListen extends ListenerControl
             ->namespace($model->namespace)
             ->extend(JsonResource::class);
 
-        if (!config('scaffold.doc_block.class.resource')) {
+        if (! config('scaffold.doc_block.class.resource')) {
             $class->doc(function () {
             });
         }
@@ -63,7 +62,7 @@ class MakeResourceListen extends ListenerControl
         return [
             app_path("Http/Resources/{$model->class_name}.php"),
             $class->wrap('php')->render(),
-            false
+            false,
         ];
     }
 }

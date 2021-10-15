@@ -11,13 +11,13 @@ use Illuminate\Pipeline\Pipeline;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Class Scaffold
+ * Class Scaffold.
  * @package Bfg\Scaffold
  */
 class Scaffold
 {
     /**
-     * BlessModel constructor.
+     * Scaffold constructor.
      *
      * @param  \Illuminate\Contracts\Container\Container  $container
      * @param  FileStorage  $storage
@@ -41,10 +41,10 @@ class Scaffold
      * @return \Bfg\Scaffold\LevyCollections\ModelCollection|LevyModel[]|null
      * @throws \Exception
      */
-    public function modelsFromJsonFile(string $file): \Bfg\Scaffold\LevyCollections\ModelCollection|array|null
+    public function modelsFromJsonFile(string $file): LevyCollections\ModelCollection|array|null
     {
         return $this->modelsFromJson(
-            is_file($file) ? file_get_contents($file) : "[]"
+            is_file($file) ? file_get_contents($file) : '[]'
         );
     }
 
@@ -53,10 +53,10 @@ class Scaffold
      * @return LevyCollections\ModelCollection|array|null
      * @throws \Exception
      */
-    public function modelsFromYamlFile(string $file): \Bfg\Scaffold\LevyCollections\ModelCollection|array|null
+    public function modelsFromYamlFile(string $file): LevyCollections\ModelCollection|array|null
     {
         return $this->modelsFromYaml(
-            is_file($file) ? file_get_contents($file) : "[]"
+            is_file($file) ? file_get_contents($file) : '[]'
         );
     }
 
@@ -65,7 +65,7 @@ class Scaffold
      * @return \Bfg\Scaffold\LevyCollections\ModelCollection|LevyModel[]|null
      * @throws \Exception
      */
-    public function modelsFromJson(string $json = "[]"): \Bfg\Scaffold\LevyCollections\ModelCollection|array|null
+    public function modelsFromJson(string $json = '[]'): LevyCollections\ModelCollection|array|null
     {
         return $this->modelsFromArray(
             json_decode($json, 1)
@@ -77,7 +77,7 @@ class Scaffold
      * @return \Bfg\Scaffold\LevyCollections\ModelCollection|LevyModel[]|null
      * @throws \Exception
      */
-    public function modelsFromYaml(string $yaml = "[]"): \Bfg\Scaffold\LevyCollections\ModelCollection|array|null
+    public function modelsFromYaml(string $yaml = '[]'): LevyCollections\ModelCollection|array|null
     {
         return $this->modelsFromArray(
             Yaml::parse($yaml)
@@ -89,7 +89,7 @@ class Scaffold
      * @return \Bfg\Scaffold\LevyCollections\ModelCollection|LevyModel[]|null
      * @throws \Exception
      */
-    public function modelsFromArray(array $syntax): \Bfg\Scaffold\LevyCollections\ModelCollection|array|null
+    public function modelsFromArray(array $syntax): LevyCollections\ModelCollection|array|null
     {
         foreach (ScaffoldConstruct::make($syntax) as $name => $data) {
             LevyModel::model($name, $data);
@@ -101,7 +101,7 @@ class Scaffold
     /**
      * @return \Bfg\Scaffold\LevyCollections\ModelCollection|LevyModel[]|null
      */
-    public function models(): \Bfg\Scaffold\LevyCollections\ModelCollection|array|null
+    public function models(): LevyCollections\ModelCollection|array|null
     {
         return LevyModel::collect();
     }
@@ -115,7 +115,7 @@ class Scaffold
         (new Pipeline($this->container))
             ->send($model)
             ->through(array_merge(config('scaffold.parse_pipes.'.$class, []), [
-                SetPipe::class
+                SetPipe::class,
             ]))->thenReturn();
     }
 
@@ -126,7 +126,6 @@ class Scaffold
     public function makeFinishPipe(LevyModelAbstract $model): mixed
     {
         if ($model instanceof LevyModel) {
-
             return (new Pipeline($this->container))
                 ->send($model)
                 ->through([DetectRelationsPipe::class])

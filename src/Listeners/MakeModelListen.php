@@ -7,11 +7,12 @@ use Bfg\Scaffold\LevyModel\LevyConstModel;
 use Bfg\Scaffold\LevyModel\LevyFieldModel;
 use Bfg\Scaffold\LevyModel\LevyModel;
 use Bfg\Scaffold\LevyModel\LevyPropertyModel;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class MakeModelListen
+ * Class MakeModelListen.
  * @package Bfg\Scaffold\Listeners
  */
 class MakeModelListen extends ListenerControl
@@ -38,7 +39,7 @@ class MakeModelListen extends ListenerControl
         $class = class_entity($model->class_name)
             ->namespace($model->namespace);
 
-        if (!config('scaffold.doc_block.class.model')) {
+        if (! config('scaffold.doc_block.class.model')) {
             $class->doc(function () {
             });
         }
@@ -50,6 +51,10 @@ class MakeModelListen extends ListenerControl
             $class->extend(Model::class);
         }
 
+        if ($model->must_verify) {
+            $class->implement(MustVerifyEmail::class);
+        }
+
         foreach ($model->traits as $trait) {
             $class->addTrait($trait->class);
         }
@@ -58,10 +63,10 @@ class MakeModelListen extends ListenerControl
             $class->const(strtoupper($constant->name), $this->format($constant->value));
         }
 
-        if ($model->created && !$model->updated) {
+        if ($model->created && ! $model->updated) {
             $class->const('CREATED_AT', 'null');
         } else {
-            if (!$model->created && $model->updated) {
+            if (! $model->created && $model->updated) {
                 $class->const('UPDATED_AT', 'null');
             }
         }
@@ -74,7 +79,7 @@ class MakeModelListen extends ListenerControl
             }
         });
 
-        if (!$model->created && !$model->updated) {
+        if (! $model->created && ! $model->updated) {
             $class->prop('public:timestamps', false)->doc(function ($entity) {
                 if (config('scaffold.doc_block.props.timestamps')) {
                     /** @var DocumentorEntity $entity */
@@ -97,7 +102,7 @@ class MakeModelListen extends ListenerControl
         $class->prop(
             'protected:fillable',
             $this->format($model->fields->sortBy('order')->pluck('name')
-                ->filter(fn($k
+                ->filter(fn ($k
                 ) => $k !== 'id' && $k !== 'created_at' && $k !== 'updated_at' && $k !== 'deleted_at')->toArray())
         )->doc(function ($entity) {
             if (config('scaffold.doc_block.props.fillable')) {
@@ -111,7 +116,7 @@ class MakeModelListen extends ListenerControl
             'protected:casts',
             $this->format($model->fields->sortBy('order')->mapWithKeys(function (LevyFieldModel $model) {
                 return $model->cast ? [$model->name => $this->makeCast($model)] : [];
-            })->filter(fn(
+            })->filter(fn (
                 $i,
                 $k
             ) => $k !== 'id' && $k !== 'created_at' && $k !== 'updated_at' && $k !== 'deleted_at')->toArray())
@@ -126,8 +131,8 @@ class MakeModelListen extends ListenerControl
         $attrs = $model->fields
             ->sortBy('order')
             ->pluck('default', 'name')
-            ->filter(fn($i
-            ) => !is_null($i) && $i !== 'id' && $i !== 'created_at' && $i !== 'updated_at' && $i !== 'deleted_at')
+            ->filter(fn ($i
+            ) => ! is_null($i) && $i !== 'id' && $i !== 'created_at' && $i !== 'updated_at' && $i !== 'deleted_at')
             ->toArray();
 
         if (count($attrs)) {
@@ -139,7 +144,6 @@ class MakeModelListen extends ListenerControl
                 }
             });
         }
-
 
         // ToDo: Move to documentation
         if ($model->hidden) {
@@ -200,7 +204,7 @@ class MakeModelListen extends ListenerControl
             } else {
                 $method->noAutoDoc();
             }
-            $method->line("parent::boot();")->line();
+            $method->line('parent::boot();')->line();
             $method->line("static::observe({$model->observer->class}::class);");
         }
 
@@ -211,20 +215,20 @@ class MakeModelListen extends ListenerControl
                     /** @var DocumentorEntity $entity */
                     /** @var LevyConstModel $related_name */
                     $related_name = $relation->related->constants->where('name', 'title')->first();
-                    $entity->description("The \"{$relation->name}\" relation".($related_name ? " for \"".\Str::ascii($related_name->value,
-                            )."\"" : ""));
+                    $entity->description("The \"{$relation->name}\" relation".($related_name ? ' for "'.\Str::ascii($related_name->value,
+                            ).'"' : ''));
                     $entity->tagReturn($relation->relation->relation_class);
                 });
             } else {
                 $method->noAutoDoc();
             }
             $method->line("return \$this->{$relation->name}(".implode(', ',
-                    $this->formatArray($relation->relation->relation_params)).");");
+                    $this->formatArray($relation->relation->relation_params)).');');
         }
 
         return [
             $model->file,
-            $class->wrap('php')->render()
+            $class->wrap('php')->render(),
         ];
     }
 
@@ -234,7 +238,7 @@ class MakeModelListen extends ListenerControl
      */
     protected function makeCast(LevyFieldModel $model): \Bfg\Entity\Core\EntityPhp|string|null
     {
-        if (!$model->cast_class) {
+        if (! $model->cast_class) {
             return $model->cast;
         }
 
@@ -242,7 +246,7 @@ class MakeModelListen extends ListenerControl
             ->namespace($model->cast_namespace)
             ->implement(CastsAttributes::class);
 
-        if (!config('scaffold.doc_block.class.cast')) {
+        if (! config('scaffold.doc_block.class.cast')) {
             $class->doc(function () {
             });
         }
@@ -252,7 +256,7 @@ class MakeModelListen extends ListenerControl
             ->param('key')
             ->param('value')
             ->param('attributes');
-        $method_get->line("return \$value;");
+        $method_get->line('return $value;');
         if (config('scaffold.doc_block.methods.cast_get')) {
             $method_get->doc(function ($entity) use ($model) {
                 /** @var DocumentorEntity $entity */
@@ -272,7 +276,7 @@ class MakeModelListen extends ListenerControl
             ->param('key')
             ->param('value')
             ->param('attributes');
-        $method_set->line("return \$value;");
+        $method_set->line('return $value;');
         if (config('scaffold.doc_block.methods.cast_set')) {
             $method_set->doc(function ($entity) use ($model) {
                 /** @var DocumentorEntity $entity */
@@ -293,6 +297,6 @@ class MakeModelListen extends ListenerControl
             false
         )->save();
 
-        return entity($model->cast_class."::class");
+        return entity($model->cast_class.'::class');
     }
 }

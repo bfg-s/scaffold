@@ -5,7 +5,7 @@ namespace Bfg\Scaffold\Commands;
 use Illuminate\Console\Command;
 
 /**
- * Class ScaffoldGenerateCommand
+ * Class ScaffoldGenerateCommand.
  * @package App\Console\Commands
  */
 class FoolFreshCommand extends Command
@@ -25,14 +25,14 @@ class FoolFreshCommand extends Command
     protected $description = 'Global rebuild, forcibly generates through scaffolding and completely refreshes the database along with seeding.';
 
     /**
-     * Command for call before fresh processing
+     * Command for call before fresh processing.
      *
      * @var array
      */
     public static array $before = [];
 
     /**
-     *  Command for call after fresh processing
+     *  Command for call after fresh processing.
      *
      * @var array
      */
@@ -63,15 +63,14 @@ class FoolFreshCommand extends Command
         }
 
         $this->call(ScaffoldGenerateCommand::class, [
-            '--force' => true
+            '--force' => true,
         ]);
 
         $this->call('migrate:fresh', [
-            '--seed' => true
+            '--seed' => true,
         ]);
 
         if ($this->option('composer')) {
-
             system('composer dump-autoload');
         }
 

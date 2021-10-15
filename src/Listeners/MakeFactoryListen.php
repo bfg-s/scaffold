@@ -7,7 +7,7 @@ use Bfg\Scaffold\LevyModel\LevyModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * Class MakeFactoryListen
+ * Class MakeFactoryListen.
  * @package Bfg\Scaffold\Listeners
  */
 class MakeFactoryListen extends ListenerControl
@@ -21,17 +21,16 @@ class MakeFactoryListen extends ListenerControl
     public function handle(LevyModel $model)
     {
         if ($model->factory) {
-
             $class = class_entity($model->factory->class_name)
                 ->namespace($model->factory->namespace)
                 ->extend(Factory::class);
 
-            if (!config('scaffold.doc_block.class.factory')) {
+            if (! config('scaffold.doc_block.class.factory')) {
                 $class->doc(function () {
                 });
             }
 
-            $prop = $class->prop("protected:model", entity($model->class . '::class'));
+            $prop = $class->prop('protected:model', entity($model->class.'::class'));
 
             $prop->doc(function ($doc) {
                 /** @var DocumentorEntity $doc */

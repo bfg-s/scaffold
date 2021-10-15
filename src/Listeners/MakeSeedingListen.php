@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Seeder;
 
 /**
- * Class MakeSeedingListen
+ * Class MakeSeedingListen.
  * @package Bfg\Scaffold\Listeners
  */
 class MakeSeedingListen extends ListenerControl
@@ -33,12 +33,11 @@ class MakeSeedingListen extends ListenerControl
     public function handle(LevyModel $model)
     {
         if ($model->seed) {
-
             $class = class_entity($model->seed->class_name)
                 ->namespace($model->seed->namespace)
                 ->extend(Seeder::class);
 
-            if (!config('scaffold.doc_block.class.seed')) {
+            if (! config('scaffold.doc_block.class.seed')) {
                 $class->doc(function () {
                 });
             }
@@ -46,25 +45,23 @@ class MakeSeedingListen extends ListenerControl
             $method = $class->method('run');
 
             if ($model->seed->factory) {
-
                 $method->line($model->seed->factory);
             }
 
             if ($model->seed->data) {
-
                 $class->method('data')
                     ->modifier('protected')
                     ->dataReturn($model->seed->data);
 
-                $method->line("foreach (\$this->data() as \$item) {");
-                    $method->tab($model->class . "::create(\$item);");
-                $method->line("}");
+                $method->line('foreach ($this->data() as $item) {');
+                $method->tab($model->class.'::create($item);');
+                $method->line('}');
             }
 
             $method->doc(function ($doc) {
                 /** @var DocumentorEntity $doc */
                 if (config('scaffold.doc_block.methods.seed_run')) {
-                    $doc->description("Run the database seeds.");
+                    $doc->description('Run the database seeds.');
                     $doc->tagReturn('void');
                 }
             });
@@ -89,8 +86,7 @@ class MakeSeedingListen extends ListenerControl
 
         $file_content = file_get_contents($file);
 
-        if (!preg_match("/{$model->seed->class_name}::class/", $file_content)) {
-
+        if (! preg_match("/{$model->seed->class_name}::class/", $file_content)) {
             static::$lines[] = "        \$this->call({$model->seed->class_name}::class);";
         }
     }
@@ -102,7 +98,6 @@ class MakeSeedingListen extends ListenerControl
         $file_content = file_get_contents($file);
 
         if (static::$lines) {
-
             $ref = new \ReflectionClass(DatabaseSeeder::class);
 
             $method = $ref->getMethod('run');
@@ -115,8 +110,8 @@ class MakeSeedingListen extends ListenerControl
 
             $exploded_method = array_merge($exploded_method, array_reverse(static::$lines));
 
-            $exploded_method[] = "    }";
-            $exploded_method[] = "";
+            $exploded_method[] = '    }';
+            $exploded_method[] = '';
 
             $new_file_content = str_replace(
                 $method_text, implode("\n", $exploded_method), $file_content

@@ -8,7 +8,7 @@ use Bfg\Scaffold\Commands\ScaffoldClearCommand;
 use Bfg\Scaffold\Commands\ScaffoldGenerateCommand;
 
 /**
- * Class ServiceProvider
+ * Class ServiceProvider.
  * @package Bfg\Scaffold
  */
 class ServiceProvider extends InstalledProvider
@@ -24,24 +24,24 @@ class ServiceProvider extends InstalledProvider
      * and the extension is installed.
      * @return void
      */
-    function installed(): void
+    public function installed(): void
     {
         /**
-         * Merge config from having by default
+         * Merge config from having by default.
          */
         $this->mergeConfigFrom(
             __DIR__.'/../config/scaffold.php', 'scaffold'
         );
 
         /**
-         * Register publisher scaffold configs
+         * Register publisher scaffold configs.
          */
         $this->publishes([
             __DIR__.'/../config/scaffold.php' => config_path('scaffold.php'),
         ], 'scaffold');
 
         /**
-         * Register publisher scaffold demos
+         * Register publisher scaffold demos.
          */
         $this->publishes([
             __DIR__.'/../demo.json' => database_path('scaffolds.json'),
@@ -53,7 +53,7 @@ class ServiceProvider extends InstalledProvider
      * "boot" and the extension is installed.
      * @return void
      */
-    function run(): void
+    public function run(): void
     {
         $this->commands([
             ScaffoldGenerateCommand::class,

@@ -5,7 +5,7 @@ namespace Bfg\Scaffold\Commands;
 use Illuminate\Console\Command;
 
 /**
- * Class ScaffoldClearCommand
+ * Class ScaffoldClearCommand.
  * @package Bfg\Scaffold\Commands
  */
 class ScaffoldClearCommand extends Command
@@ -57,7 +57,8 @@ class ScaffoldClearCommand extends Command
 
         if ($diffs) {
             $this->line("Save your changes to these files:\n - ".implode("\n - ",
-                    array_map(fn($i) => str_replace(base_path(), '', $i), $diffs))."\n");
+                    array_map(fn ($i) => str_replace(base_path(), '', $i), $diffs))."\n");
+
             return 0;
         }
 
@@ -65,7 +66,7 @@ class ScaffoldClearCommand extends Command
             $this->option('all')
         );
 
-        $this->info("Done!");
+        $this->info('Done!');
 
         return 0;
     }

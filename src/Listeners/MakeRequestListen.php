@@ -9,7 +9,7 @@ use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Class MakeRequestListen
+ * Class MakeRequestListen.
  * @package Bfg\Scaffold\Listeners
  */
 class MakeRequestListen extends ListenerControl
@@ -23,18 +23,17 @@ class MakeRequestListen extends ListenerControl
     public function handle(LevyModel $model)
     {
         if ($model->rules && $model->rules->count()) {
-
             $class = class_entity($model->rules->class_name)
                 ->namespace($model->rules->namespace)
                 ->extend(FormRequest::class);
 
-            if (!config('scaffold.doc_block.class.request')) {
+            if (! config('scaffold.doc_block.class.request')) {
                 $class->doc(function () {
                 });
             }
 
             $method = $class->method('authorize');
-            $method->line("return true;");
+            $method->line('return true;');
             $method->doc(function ($entity) {
                 if (config('scaffold.doc_block.methods.request_authorize')) {
                     /** @var DocumentorEntity $entity */
@@ -55,7 +54,7 @@ class MakeRequestListen extends ListenerControl
             }
 
             $method = $class->method('rules');
-            $method->line("return ".array_entity($rules).";");
+            $method->line('return '.array_entity($rules).';');
             $method->doc(function ($entity) {
                 if (config('scaffold.doc_block.methods.request_rules')) {
                     /** @var DocumentorEntity $entity */
@@ -82,7 +81,7 @@ class MakeRequestListen extends ListenerControl
             ->implement(Rule::class)
             ->namespace($model->namespace);
 
-        if (!config('scaffold.doc_block.class.rule')) {
+        if (! config('scaffold.doc_block.class.rule')) {
             $class->doc(function () {
             });
         }

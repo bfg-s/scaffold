@@ -7,7 +7,7 @@ use Bfg\Scaffold\ScaffoldConstruct;
 use Illuminate\Console\Command;
 
 /**
- * Class ScaffoldGenerateCommand
+ * Class ScaffoldGenerateCommand.
  * @package App\Console\Commands
  */
 class ScaffoldGenerateCommand extends Command
@@ -53,8 +53,7 @@ class ScaffoldGenerateCommand extends Command
 
         $yaml = false;
 
-        if (!is_file($path) || $this->option('yaml')) {
-
+        if (! is_file($path) || $this->option('yaml')) {
             $path = database_path("{$name}.yaml");
 
             $yaml = true;
@@ -74,7 +73,8 @@ class ScaffoldGenerateCommand extends Command
 
             if ($diffs) {
                 $this->line("Save your changes to these files:\n - ".implode("\n - ",
-                        array_map(fn($i) => str_replace(base_path(), '', $i), $diffs))."\n");
+                        array_map(fn ($i) => str_replace(base_path(), '', $i), $diffs))."\n");
+
                 return 0;
             }
 
@@ -96,14 +96,14 @@ class ScaffoldGenerateCommand extends Command
                 );
                 $this->info('The scaffolding completed its work successfully!');
             } else {
-                $this->error("Complete the scaffolding file!");
+                $this->error('Complete the scaffolding file!');
             }
         } else {
             if ($name === 'scaffold') {
                 file_put_contents($path, "{\n}");
-                $this->info("Scaffold file [database/scaffold.".($yaml ? 'yaml':'json')."] created!");
+                $this->info('Scaffold file [database/scaffold.'.($yaml ? 'yaml' : 'json').'] created!');
             } else {
-                $this->error("File [database/scaffold.".($yaml ? 'yaml':'json')."] not found!");
+                $this->error('File [database/scaffold.'.($yaml ? 'yaml' : 'json').'] not found!');
             }
         }
 
