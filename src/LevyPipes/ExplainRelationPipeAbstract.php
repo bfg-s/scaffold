@@ -38,10 +38,15 @@ abstract class ExplainRelationPipeAbstract
 
             call_user_func($callable, $type, $related, $parent);
 
-            $related_background = config("scaffold.relation_reversals_types.{$type->name}");
+            $related_background =
+                $type->related_background ?: config("scaffold.relation_reversals_types.{$type->name}");
 
-            if (! $type->background_addition && $related_background) {
-                $name = call_user_func([\Str::class, $this->related_name_convert], $parent->name);
+            $related_name_convert = config("scaffold.related_name_convert.{$related_background}", 'singular');
+            if (
+                ! $type->background_addition &&
+                $related_background
+            ) {
+                $name = call_user_func([\Str::class, $related_name_convert], $parent->name);
                 if (! $related->relations->where('relation_name', \Str::camel($name))->first()) {
                     $related->relations->push(
                         LevyRelatedTypeModel::model($related_background, [

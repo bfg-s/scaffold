@@ -71,6 +71,13 @@ class LevyRelatedTypeModel extends LevyModelAbstract
     public bool $background_addition = false;
 
     /**
+     * Background relationship.
+     *
+     * @var bool
+     */
+    public ?string $related_background = null;
+
+    /**
      * @var LevyRelationAbstract|null
      */
     public ?LevyRelationAbstract $relation = null;

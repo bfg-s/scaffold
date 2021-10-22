@@ -216,7 +216,7 @@ class MakeModelListen extends ListenerControl
                     /** @var LevyConstModel $related_name */
                     $related_name = $relation->related->constants->where('name', 'title')->first();
                     $entity->description("The \"{$relation->name}\" relation".($related_name ? ' for "'.\Str::ascii($related_name->value,
-                            ).'"' : ''));
+                            ).'"' : '') . ' model');
                     $entity->tagReturn($relation->relation->relation_class);
                 });
             } else {

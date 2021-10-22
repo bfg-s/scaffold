@@ -27,6 +27,7 @@ class DetectRelationsPipe
                 $relation_name = explode(':', $relation_name);
                 $name = $relation_name[0];
                 $nullable = false;
+                $related = null;
                 if (preg_match('/^\?(.*)$/', $name, $m)) {
                     $nullable = true;
                     $name = $m[1];
@@ -64,6 +65,11 @@ class DetectRelationsPipe
                     unset($relation_syntax['nullable']);
                 }
 
+                if (isset($relation_syntax['related'])) {
+                    $related = $relation_syntax['related'];
+                    unset($relation_syntax['related']);
+                }
+
                 $with_model = ! LevyModel::has_model($model_name);
 
                 $related_model = $model_name == $model->name ? $model : LevyModel::model($model_name, $relation_syntax);
@@ -95,6 +101,7 @@ class DetectRelationsPipe
                     'nullable' => $nullable,
                     'cascade_update' => $cascade_update,
                     'cascade_delete' => $cascade_delete,
+                    'related_background' => $related,
                 ], $method_params));
 
                 $model->relations->push($type_name);
