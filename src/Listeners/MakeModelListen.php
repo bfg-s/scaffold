@@ -145,7 +145,6 @@ class MakeModelListen extends ListenerControl
             });
         }
 
-        // ToDo: Move to documentation
         if ($model->hidden) {
             $class->prop('protected:hidden', $this->format($model->hidden))->doc(function ($entity) {
                 if (config('scaffold.doc_block.props.hidden')) {
@@ -217,7 +216,7 @@ class MakeModelListen extends ListenerControl
                     $related_name = $relation->related->constants->where('name', 'title')->first();
                     $entity->description("The \"{$relation->name}\" relation".($related_name ? ' for "'.\Str::ascii($related_name->value,
                             ).'"' : '') . ' model');
-                    $entity->tagReturn($relation->relation->relation_class);
+                    $entity->tagReturn($relation->relation->relation_class.'|'.$relation->related->class);
                 });
             } else {
                 $method->noAutoDoc();
