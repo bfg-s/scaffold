@@ -56,7 +56,7 @@ class ExplainRelationPipe extends ExplainRelationPipeAbstract
                     $model->related_pivot_key,
                 ];
 
-                if (! $type->background_addition) {
+                if (! $type->background_addition || $model->parent->name == 'belongsToMany') {
                     $params2 = [];
                     if ($type->nullable) {
                         $params2['nullable'] = [];
