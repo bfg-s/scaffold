@@ -15,7 +15,7 @@ class FoolFreshCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'fool:fresh {--c|composer : Composer dump-autoload}';
+    protected $signature = 'full:fresh {--c|composer : Composer dump-autoload}';
 
     /**
      * The console command description.

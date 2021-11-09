@@ -32,6 +32,9 @@ class DetectRelationsPipe
                     $nullable = true;
                     $name = $m[1];
                 }
+                if (preg_match('/^[0-9]+_(.*)$/', $name, $m)) {
+                    $name = $m[1];
+                }
                 unset($relation_name[0]);
                 $model_name = $name;
                 $method_params = [];
@@ -118,7 +121,6 @@ class DetectRelationsPipe
      * @return array
      */
     #[ArrayShape(['name' => 'string', 'params' => 'array'])]
-
     protected function props(
         string $name,
         ...$params
