@@ -68,20 +68,22 @@ class ExplainRelationPipe extends ExplainRelationPipeAbstract
                     if ($type->cascade_delete) {
                         $params['cascadeOnDelete'] = [];
                     }
-                    $parent->dependent_tables->push(
-                        LevyDependentTableModel::model($model->related_table, [
-                            'parent' => $parent, 'fields' => [
-                                [
-                                    $model->foreign_pivot_key, 'foreignId',
-                                    array_merge($params2, ['constrained' => $parent->table], $params),
+                    if (!$parent->dependent_tables->where('name', $model->related_table)->count()) {
+                        $parent->dependent_tables->push(
+                            LevyDependentTableModel::model($model->related_table, [
+                                'parent' => $parent, 'fields' => [
+                                    [
+                                        $model->foreign_pivot_key, 'foreignId',
+                                        array_merge($params2, ['constrained' => $parent->table], $params),
+                                    ],
+                                    [
+                                        $model->related_pivot_key, 'foreignId',
+                                        array_merge($params2, ['constrained' => $related->table], $params),
+                                    ],
                                 ],
-                                [
-                                    $model->related_pivot_key, 'foreignId',
-                                    array_merge($params2, ['constrained' => $related->table], $params),
-                                ],
-                            ],
-                        ])
-                    );
+                            ])
+                        );
+                    }
                 }
             });
 

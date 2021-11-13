@@ -32,9 +32,11 @@ class DetectDependentTablePipe
             is_assoc($model->syntax['dependent_tables'])
         ) {
             foreach ($model->syntax['dependent_tables'] as $name => $syntax) {
-                $model->dependent_tables->push(
-                    LevyDependentTableModel::model($name, ['fields' => $syntax])
-                );
+                if (!$model->dependent_tables->where('name', $name)->count()) {
+                    $model->dependent_tables->push(
+                        LevyDependentTableModel::model($name, ['fields' => $syntax])
+                    );
+                }
             }
             unset($model->syntax['dependent_tables']);
         }

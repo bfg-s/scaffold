@@ -24,6 +24,8 @@ class MakeMigrationListen extends ListenerControl
      */
     public static ?int $iterator_add = null;
 
+    static array $files_name = [];
+
     /**
      * Handle the event.
      *
@@ -42,8 +44,12 @@ class MakeMigrationListen extends ListenerControl
         $files = [];
 
         foreach ($model->dependent_tables as $dependent_table) {
-            $files[] = $this->makeFile($dependent_table, static::$iterator_add);
-            static::$iterator_add--;
+            info($dependent_table->name);
+            if (!isset(static::$files_name[$dependent_table->name])) {
+                $files[] = $this->makeFile($dependent_table, static::$iterator_add);
+                static::$iterator_add--;
+                static::$files_name[$dependent_table->name] = $dependent_table;
+            }
         }
 
         $files[] = $this->makeFile($model->table_model);

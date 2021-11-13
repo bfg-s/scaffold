@@ -63,15 +63,17 @@ class ExplainRelationPipe extends ExplainRelationPipeAbstract
         ];
 
         if (! $type->background_addition) {
-            $related->dependent_tables->push(
-                LevyDependentTableModel::model($model->morph_table, [
-                    'parent' => $parent, 'fields' => [
-                        [$model->related_pivot_key, 'bigIncrements'],
-                        [$model->foreign_pivot_key, 'bigInteger'],
-                        [$model->morph_name.'_type', 'string'],
-                    ],
-                ])
-            );
+            if (!$related->dependent_tables->where('name', $model->morph_table)->count()) {
+                $related->dependent_tables->push(
+                    LevyDependentTableModel::model($model->morph_table, [
+                        'parent' => $parent, 'fields' => [
+                            [$model->related_pivot_key, 'bigIncrements'],
+                            [$model->foreign_pivot_key, 'bigInteger'],
+                            [$model->morph_name.'_type', 'string'],
+                        ],
+                    ])
+                );
+            }
         }
     }
 }
