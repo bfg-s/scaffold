@@ -52,8 +52,8 @@ class ExplainRelationPipe extends ExplainRelationPipeAbstract
 
                 $this->related_params = [
                     $model->related_table,
-                    $model->foreign_pivot_key,
                     $model->related_pivot_key,
+                    $model->foreign_pivot_key,
                 ];
 
                 if (! $type->background_addition || $model->parent->name == 'belongsToMany') {
@@ -68,7 +68,7 @@ class ExplainRelationPipe extends ExplainRelationPipeAbstract
                     if ($type->cascade_delete) {
                         $params['cascadeOnDelete'] = [];
                     }
-                    if (!$parent->dependent_tables->where('name', $model->related_table)->count()) {
+                    if (! $parent->dependent_tables->where('name', $model->related_table)->count()) {
                         $parent->dependent_tables->push(
                             LevyDependentTableModel::model($model->related_table, [
                                 'parent' => $parent, 'fields' => [

@@ -63,7 +63,7 @@ class ExplainRelationPipe extends ExplainRelationPipeAbstract
         ];
 
         if (! $type->background_addition) {
-            if (!$related->dependent_tables->where('name', $model->morph_table)->count()) {
+            if (! $related->dependent_tables->where('name', $model->morph_table)->count()) {
                 $related->dependent_tables->push(
                     LevyDependentTableModel::model($model->morph_table, [
                         'parent' => $parent, 'fields' => [
