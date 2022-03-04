@@ -229,9 +229,14 @@ class MakeModelListen extends ListenerControl
         if (config('scaffold.defaults.model.json_unescaped_unicode', true)) {
 
             $class->method('toJson')
-                ->param('options', 0)
+                ->param('options', "0")
                 ->returnType('string')
                 ->line('return parent::toJson(JSON_UNESCAPED_UNICODE);');
+
+            $class->method('asJson')
+                ->param('value')
+                ->returnType('string')
+                ->line('return json_encode($value, JSON_UNESCAPED_UNICODE);');
         }
 
 
