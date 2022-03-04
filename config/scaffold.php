@@ -16,6 +16,7 @@ return [
             'type' => 'hasOne',
             'created' => 'created_at',
             'updated' => 'updated_at',
+            'json_unescaped_unicode' => true,
         ],
         /**
          * Default generation constants.

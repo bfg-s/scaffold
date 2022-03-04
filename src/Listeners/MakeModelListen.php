@@ -225,6 +225,15 @@ class MakeModelListen extends ListenerControl
                     $this->formatArray($relation->relation->relation_params)).');');
         }
 
+
+        if (config('scaffold.defaults.model.json_unescaped_unicode', true)) {
+
+            $class->method('toJson')
+                ->returnType('string')
+                ->line('return parent::toJson(JSON_UNESCAPED_UNICODE);');
+        }
+
+
         return [
             $model->file,
             $class->wrap('php')->render(),
