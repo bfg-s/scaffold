@@ -62,7 +62,7 @@ class FileStorage
                 ];
             }
 
-            file_put_contents($file_path, $data);
+            file_put_contents(str_replace(['/', '\/'], DIRECTORY_SEPARATOR, $file_path), $data);
         }
 
         if (! isset($this->files[$file_path])) {
@@ -121,7 +121,7 @@ class FileStorage
         foreach ($this->files as $file => $info) {
             if (($info['remove'] || $remove_all) && $info['type'] == 'file') {
                 if (is_file($file)) {
-                    \File::delete(str_replace('/', DIRECTORY_SEPARATOR, $file));
+                    \File::delete(str_replace(['/', '\/'], DIRECTORY_SEPARATOR, $file));
                 }
 
                 unset($this->files[$file]);
