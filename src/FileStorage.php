@@ -62,7 +62,7 @@ class FileStorage
                 ];
             }
 
-            file_put_contents(str_replace(['/', '\/'], DIRECTORY_SEPARATOR, $file_path), $data);
+            file_put_contents(str_replace(['/','\\'], DIRECTORY_SEPARATOR, $file_path), $data);
         }
 
         if (! isset($this->files[$file_path])) {
@@ -106,7 +106,7 @@ class FileStorage
     public function save(): static
     {
         file_put_contents(
-            $this->cache_file,
+            str_replace(['/','\\'], DIRECTORY_SEPARATOR, $this->cache_file),
             array_entity($this->files)->wrap('php', 'return')
         );
 
@@ -121,7 +121,7 @@ class FileStorage
         foreach ($this->files as $file => $info) {
             if (($info['remove'] || $remove_all) && $info['type'] == 'file') {
                 if (is_file($file)) {
-                    \File::delete(str_replace(['/', '\/'], DIRECTORY_SEPARATOR, $file));
+                    \File::delete(str_replace(['/','\\'], DIRECTORY_SEPARATOR, $file));
                 }
 
                 unset($this->files[$file]);
