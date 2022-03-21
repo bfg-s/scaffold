@@ -49,7 +49,7 @@ class FileStorage
      */
     public function store(string $file_path, string $data, bool $removeable = true, bool $save = false): static
     {
-        $file_path = str_replace(['/','\\'], DIRECTORY_SEPARATOR, $file_path);
+        $file_path = str_replace(['/','\\'], '/', $file_path);
 
         if (! is_file($file_path)) {
             $dir = dirname($file_path);
@@ -64,7 +64,7 @@ class FileStorage
                 ];
             }
 
-            file_put_contents(str_replace(['/','\\'], DIRECTORY_SEPARATOR, $file_path), $data);
+            file_put_contents(str_replace(['/','\\'], '/', $file_path), $data);
         }
 
         if (! isset($this->files[$file_path])) {
@@ -108,7 +108,7 @@ class FileStorage
     public function save(): static
     {
         file_put_contents(
-            str_replace(['/','\\'], DIRECTORY_SEPARATOR, $this->cache_file),
+            str_replace(['/','\\'], '/', $this->cache_file),
             array_entity($this->files)->wrap('php', 'return')
         );
 
@@ -122,7 +122,7 @@ class FileStorage
     {
         foreach ($this->files as $file => $info) {
             if (($info['remove'] || $remove_all) && $info['type'] == 'file') {
-                $file = str_replace(['/','\\'], DIRECTORY_SEPARATOR, $file);
+                $file = str_replace(['/','\\'], '/', $file);
                 if (is_file($file)) {
                     \File::delete($file);
                 }
