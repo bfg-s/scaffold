@@ -16,6 +16,7 @@ return [
             'type' => 'hasOne',
             'created' => 'created_at',
             'updated' => 'updated_at',
+            'property_of_nullables' => true,
             'json_unescaped_unicode' => true,
         ],
         /**
