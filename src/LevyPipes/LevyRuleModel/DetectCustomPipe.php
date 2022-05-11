@@ -4,6 +4,7 @@ namespace Bfg\Scaffold\LevyPipes\LevyRuleModel;
 
 use Bfg\Scaffold\LevyModel\LevyRuleModel;
 use Closure;
+use Illuminate\Support\Str;
 
 /**
  * Class DetectCustomPipe.
@@ -22,7 +23,7 @@ class DetectCustomPipe
 
         if ($model->name == ucfirst($clear_name)) {
             $model->default = false;
-            $model->class_name = ucfirst(\Str::camel($model->name)).'Rule';
+            $model->class_name = ucfirst(Str::camel($model->name)).'Rule';
             $model->namespace = 'App\\Rules';
             $model->class = $model->namespace.'\\'.$model->class_name;
             $model->rule = $model->class;

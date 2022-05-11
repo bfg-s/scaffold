@@ -4,6 +4,7 @@ namespace Bfg\Scaffold\LevyPipes\LevyResourceModel;
 
 use Bfg\Scaffold\LevyModel\LevyResourceModel;
 use Closure;
+use Illuminate\Support\Str;
 
 /**
  * Class MakeInfoPipe.
@@ -18,7 +19,7 @@ class MakeInfoPipe
      */
     public function handle(LevyResourceModel $model, Closure $next): mixed
     {
-        $model->class_name = ucfirst(\Str::camel($model->name)).'Resource';
+        $model->class_name = ucfirst(Str::camel($model->name)).'Resource';
         $model->namespace = 'App\\Http\\Resources';
         $model->class = $model->namespace.'\\'.$model->class_name;
 

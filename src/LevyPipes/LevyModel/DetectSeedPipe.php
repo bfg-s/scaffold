@@ -7,6 +7,7 @@ use Bfg\Scaffold\LevyModel\LevyModel;
 use Bfg\Scaffold\LevyModel\LevySeedModel;
 use Bfg\Scaffold\LevyModel\LevyTraitModel;
 use Closure;
+use Illuminate\Support\Str;
 
 /**
  * Class DetectSeedPipe.
@@ -24,8 +25,8 @@ class DetectSeedPipe
     {
         if (isset($model->syntax['seed']) && $model->syntax['seed']) {
             $common = [
-                'class' => 'Database\\Seeders\\'.\Str::plural($model->class_name).'Seeder',
-                'class_name' => \Str::plural($model->class_name).'Seeder',
+                'class' => 'Database\\Seeders\\'.Str::plural($model->class_name).'Seeder',
+                'class_name' => Str::plural($model->class_name).'Seeder',
                 'namespace' => 'Database\\Seeders',
             ];
 

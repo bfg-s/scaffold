@@ -5,6 +5,7 @@ namespace Bfg\Scaffold\LevyPipes\LevyModel;
 use Bfg\Scaffold\LevyCollections\RelationCollection;
 use Bfg\Scaffold\LevyModel\LevyModel;
 use Closure;
+use Illuminate\Support\Str;
 
 /**
  * Class DetectInformation.
@@ -32,7 +33,7 @@ class DetectInformation
             $model->class_name = trim($model->syntax['class_name']);
             unset($model->syntax['class_name']);
         } else {
-            $model->class_name = ucfirst(\Str::camel($model->name));
+            $model->class_name = ucfirst(Str::camel($model->name));
         }
 
         $inline_default_fields = ['created', 'updated', 'foreign', 'namespace', 'path'];
@@ -63,7 +64,7 @@ class DetectInformation
             $model->table = strtolower(trim($model->syntax['table']));
             unset($model->syntax['table']);
         } else {
-            $model->table = strtolower(\Str::plural($model->name));
+            $model->table = strtolower(Str::plural($model->name));
         }
 
         if (isset($model->syntax['inherited_field']) && $model->syntax['inherited_field']) {

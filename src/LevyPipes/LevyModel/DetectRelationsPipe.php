@@ -5,6 +5,7 @@ namespace Bfg\Scaffold\LevyPipes\LevyModel;
 use Bfg\Scaffold\LevyModel\LevyModel;
 use Bfg\Scaffold\LevyModel\LevyRelatedTypeModel;
 use Closure;
+use Illuminate\Support\Str;
 use JetBrains\PhpStorm\ArrayShape;
 
 /**
@@ -96,7 +97,7 @@ class DetectRelationsPipe
 
                 $type_name = LevyRelatedTypeModel::model($type_name, array_merge([
                     'name' => $type_name,
-                    'relation_name' => \Str::camel($name),
+                    'relation_name' => Str::camel($name),
                     'params' => $params,
                     'parent' => $model, //Who owns
                     'with_model' => $with_model,

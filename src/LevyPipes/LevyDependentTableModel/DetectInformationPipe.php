@@ -4,6 +4,7 @@ namespace Bfg\Scaffold\LevyPipes\LevyDependentTableModel;
 
 use Bfg\Scaffold\LevyModel\LevyDependentTableModel;
 use Closure;
+use Illuminate\Support\Str;
 
 /**
  * Class DetectInformationPipe.
@@ -18,7 +19,7 @@ class DetectInformationPipe
      */
     public function handle(LevyDependentTableModel $model, Closure $next): mixed
     {
-        $model->class_name = 'Create'.ucfirst(\Str::camel($model->name)).'Table';
+        $model->class_name = 'Create'.ucfirst(Str::camel($model->name)).'Table';
 
         $model->file = database_path('migrations/{prefix}_create_'.$model->name.'_table.php');
 

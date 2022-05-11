@@ -6,6 +6,7 @@ use Bfg\Installer\Providers\InstalledProvider;
 use Bfg\Scaffold\Commands\FoolFreshCommand;
 use Bfg\Scaffold\Commands\ScaffoldClearCommand;
 use Bfg\Scaffold\Commands\ScaffoldGenerateCommand;
+use Bfg\Scaffold\Commands\ScaffoldInjectCommand;
 
 /**
  * Class ServiceProvider.
@@ -59,6 +60,7 @@ class ServiceProvider extends InstalledProvider
             ScaffoldGenerateCommand::class,
             ScaffoldClearCommand::class,
             FoolFreshCommand::class,
+            ScaffoldInjectCommand::class,
         ]);
     }
 }

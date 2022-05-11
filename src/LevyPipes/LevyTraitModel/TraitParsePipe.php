@@ -6,6 +6,7 @@ use Bfg\Scaffold\LevyModel\LevyConstModel;
 use Bfg\Scaffold\LevyModel\LevyRelatedTypeModel;
 use Bfg\Scaffold\LevyModel\LevyTraitModel;
 use Closure;
+use Illuminate\Support\Str;
 
 /**
  * Class TraitParsePipe.
@@ -49,7 +50,7 @@ class TraitParsePipe
         }
 
         if (! $model->class) {
-            $n = ucfirst(\Str::camel($model->name));
+            $n = ucfirst(Str::camel($model->name));
 
             $model->class = tag_replace(
                 config('scaffold.defaults.trait.class'),

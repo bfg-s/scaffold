@@ -5,6 +5,7 @@ namespace Bfg\Scaffold\LevyPipes\LevyFieldModel;
 use Bfg\Scaffold\LevyModel\LevyFieldModel;
 use Closure;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Str;
 
 /**
  * Class FieldParsePipe.
@@ -108,7 +109,7 @@ class FieldParsePipe
      */
     protected function custom_cast(LevyFieldModel $model, string $cast = null): ?string
     {
-        $custom_class_name = ucfirst(\Str::camel($cast));
+        $custom_class_name = ucfirst(Str::camel($cast));
 
         if ($cast == $custom_class_name) {
             $model->cast_class_name = $custom_class_name.'Cast';
@@ -165,7 +166,7 @@ class FieldParsePipe
         $migration_params_def = [];
 
         foreach ($masks as $i_mask => $item_mask) {
-            if (\Str::is($i_mask, $name)) {
+            if (Str::is($i_mask, $name)) {
                 $this->each_format(
                     (array) $item_mask,
                     $name,

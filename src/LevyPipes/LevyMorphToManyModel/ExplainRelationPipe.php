@@ -9,6 +9,7 @@ use Bfg\Scaffold\LevyModel\LevyRelation\LevyMorphToManyModel;
 use Bfg\Scaffold\LevyModel\LevyRelation\LevyRelationAbstract;
 use Bfg\Scaffold\LevyPipes\ExplainRelationPipeAbstract;
 use Closure;
+use Illuminate\Support\Str;
 
 /**
  * Class ExplainRelationPipe.
@@ -46,7 +47,7 @@ class ExplainRelationPipe extends ExplainRelationPipeAbstract
         LevyModel $parent
     ) {
         $model->morph_name = $type->params[0] ?? $related->morph_field;
-        $model->morph_table = $type->params[1] ?? \Str::plural($model->morph_name);
+        $model->morph_table = $type->params[1] ?? Str::plural($model->morph_name);
         $model->foreign_pivot_key = $type->params[2] ?? $model->morph_name.'_id';
         $model->related_pivot_key = $type->params[3] ?? $related->inherited_field;
         $model->parent_key = $type->params[4] ?? $parent->foreign;

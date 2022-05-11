@@ -5,6 +5,7 @@ namespace Bfg\Scaffold\Listeners;
 use Bfg\Entity\Core\Entities\ClassMethodEntity;
 use Bfg\Entity\Core\Entities\DocumentorEntity;
 use Bfg\Scaffold\LevyModel\LevyModel;
+use Illuminate\Support\Str;
 
 /**
  * Class MakeObserverListen.
@@ -40,7 +41,7 @@ class MakeObserverListen extends ListenerControl
                  * @return void
                  */
                 $method = $class->method($event);
-                $param_name = \Str::singular($model->name);
+                $param_name = Str::singular($model->name);
                 if (config('scaffold.doc_block.methods.observer_event')) {
                     $method->doc(function ($entity) use ($event, $model, $param_name) {
                         /** @var DocumentorEntity $entity */

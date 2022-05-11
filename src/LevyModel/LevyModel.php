@@ -11,6 +11,7 @@ use Bfg\Scaffold\LevyCollections\RelationCollection;
 use Bfg\Scaffold\LevyCollections\ResourceCollection;
 use Bfg\Scaffold\LevyCollections\RuleCollection;
 use Bfg\Scaffold\LevyCollections\TraitCollection;
+use Illuminate\Support\Str;
 
 /**
  * Class LevyModel.
@@ -209,6 +210,6 @@ class LevyModel extends LevyModelAbstract
      */
     public static function modelName(string $name, array $syntax = [], bool $collect = false): string
     {
-        return \Str::singular($name);
+        return Str::singular($name);
     }
 }

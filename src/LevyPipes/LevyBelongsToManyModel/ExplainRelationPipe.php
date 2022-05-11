@@ -8,6 +8,7 @@ use Bfg\Scaffold\LevyModel\LevyRelatedTypeModel;
 use Bfg\Scaffold\LevyModel\LevyRelation\LevyBelongsToManyModel;
 use Bfg\Scaffold\LevyPipes\ExplainRelationPipeAbstract;
 use Closure;
+use Illuminate\Support\Str;
 
 /**
  * Class ExplainRelationPipe.
@@ -34,13 +35,13 @@ class ExplainRelationPipe extends ExplainRelationPipeAbstract
                 ) {
                     $type->background_addition = true;
 
-                    $model->related_pivot_key = \Str::singular($model->parent->relation_name).'_id';
+                    $model->related_pivot_key = Str::singular($model->parent->relation_name).'_id';
 
                     $model->related_table =
-                        \Str::plural($type->params[0] ?? \Str::singular($parent->table).'_'.\Str::singular($model->parent->relation_name));
+                        Str::plural($type->params[0] ?? Str::singular($parent->table).'_'.Str::singular($model->parent->relation_name));
                 } else {
                     $model->related_table =
-                        \Str::plural($type->params[0] ?? \Str::singular($parent->table).'_'.\Str::singular($related->table));
+                        Str::plural($type->params[0] ?? Str::singular($parent->table).'_'.Str::singular($related->table));
                 }
 
                 $model->relation_params = [

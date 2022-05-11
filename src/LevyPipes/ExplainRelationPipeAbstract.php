@@ -4,6 +4,7 @@ namespace Bfg\Scaffold\LevyPipes;
 
 use Bfg\Scaffold\LevyModel\LevyRelatedTypeModel;
 use Bfg\Scaffold\LevyModel\LevyRelation\LevyRelationAbstract;
+use Illuminate\Support\Str;
 
 /**
  * Class ExplainRelationPipeAbstract.
@@ -46,12 +47,12 @@ abstract class ExplainRelationPipeAbstract
                 ! $type->background_addition &&
                 $related_background
             ) {
-                $name = call_user_func([\Str::class, $related_name_convert], $parent->name);
-                if (! $related->relations->where('relation_name', \Str::camel($name))->first()) {
+                $name = call_user_func([Str::class, $related_name_convert], $parent->name);
+                if (! $related->relations->where('relation_name', Str::camel($name))->first()) {
                     $related->relations->push(
                         LevyRelatedTypeModel::model($related_background, [
                             'name' => $related_background,
-                            'relation_name' => \Str::camel($name),
+                            'relation_name' => Str::camel($name),
                             'parent' => $related,
                             'with_model' => false,
                             'related' => $parent,

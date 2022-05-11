@@ -4,6 +4,7 @@ namespace Bfg\Scaffold\LevyModel;
 
 use Bfg\Scaffold\LevyCollections\DependentTablesCollection;
 use Bfg\Scaffold\LevyCollections\FieldCollection;
+use Illuminate\Support\Str;
 
 /**
  * Class LevyDependentTableModel.
@@ -41,6 +42,6 @@ class LevyDependentTableModel extends LevyModelAbstract
      */
     public static function modelName(string $name, array $syntax = [], bool $collect = false): string
     {
-        return \Str::plural($name);
+        return Str::plural($name);
     }
 }
