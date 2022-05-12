@@ -144,6 +144,6 @@ class MakeMigrationListen extends ListenerControl
         $z = 6 - strlen((string) static::$iterator);
         $z = $z < 0 ? 0 : $z;
 
-        return '2020_07_02_'.str_repeat('0', $z).($i === null ? static::$iterator : $i);
+        return config('scaffold.defaults.migration.prefix').str_repeat('0', $z).($i === null ? static::$iterator : $i);
     }
 }

@@ -104,6 +104,12 @@ return [
                 '*_description' => ['mediumText', ['nullable']],
             ],
         ],
+        /**
+         * Migration settings
+         */
+        'migration' => [
+            'prefix' => '2020_07_02_'
+        ],
     ],
     /**
      * Default link names, an attempt to use names not from this list will result in an error.
